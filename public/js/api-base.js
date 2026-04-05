@@ -1,13 +1,14 @@
 /**
- * Firebase Hosting only serves static files. Your Express API must run elsewhere (Render,
- * Railway, Fly.io, Cloud Run, your PC with ngrok, etc.).
- *
- * After you deploy the API, set the origin below (no trailing slash). Then redeploy Hosting.
- *
- * Examples:
- *   window.API_BASE_URL = "https://cloud-optimizer-api.onrender.com";
- *   window.API_BASE_URL = "https://xxxxx.ngrok-free.app";
- *
- * Leave empty when you open the site from the same machine as npm start (localhost).
+ * API Configuration for Cloud Optimizer
+ * This file connects the Frontend (Firebase) to the Backend (Render).
  */
-window.API_BASE_URL = window.API_BASE_URL || "";
+
+// Aapka live Render backend URL
+window.API_BASE_URL = "https://cloud-optimizer-api.onrender.com";
+
+// Local testing ke liye fallback (agar aap apne PC par chala rahe hon)
+if (!window.API_BASE_URL && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+    window.API_BASE_URL = "http://localhost:10000";
+}
+
+console.log("🚀 API Base URL Connected to:", window.API_BASE_URL);
