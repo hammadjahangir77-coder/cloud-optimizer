@@ -1,0 +1,23 @@
+{
+  "name": "finnura-business-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Research site + multi-business dashboard with SQLite auth",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "deploy:hosting": "firebase deploy --only hosting"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "firebase": "^12.11.0",
+    "firebase-admin": "^13.0.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

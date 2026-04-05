@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My businesses — Cloud Optimizer</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/cloud-optimizer.css" />
+    <script src="js/api-base.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      if (!CloudResearchAuth.isLoggedIn()) { window.location.replace("login.html"); }
+    </script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+    <script src="js/lucide-init.js" defer></script>
+  </head>
+  <body class="co-theme">
+    <header class="co-nav">
+      <div class="co-nav-inner">
+        <a href="index.html" class="co-logo"><i data-lucide="cloud"></i> Cloud Optimizer</a>
+        <nav class="co-links" aria-label="Main">
+          <a href="index.html">Home</a>
+          <a href="calculator.html">Cost Calculator</a>
+          <a href="strategies.html">Optimization Strategies</a>
+          <a href="resources.html">Resources</a>
+        </nav>
+        <div class="co-nav-extra">
+          <span class="co-link-soft" id="user-label"></span>
+          <button type="button" class="co-btn-signin" id="btn-logout">Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="co-main">
+      <div class="dashboard-toolbar">
+        <div>
+          <h2 style="margin:0;font-size:1.5rem;font-weight:800;color:var(--text)">Your businesses</h2>
+          <p style="margin:0.35rem 0 0;color:var(--text-muted);font-size:0.95rem">
+            Add each business once. We store a simple profile so you can open the <strong>cloud advisor</strong> on the next screen.
+          </p>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-new-business">+ Add business</button>
+      </div>
+
+      <div class="login-error visible" id="load-error" style="display:none"></div>
+
+      <div id="empty" class="empty-state hidden">
+        <p>No businesses yet — add your first profile.</p>
+        <button type="button" class="btn btn-primary" id="btn-empty-create">Add business</button>
+      </div>
+
+      <div class="cards-grid" id="business-list"></div>
+    </main>
+
+    <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-panel" style="max-width:520px">
+        <h3 id="modal-title">Business profile</h3>
+        <p style="margin:0 0 1rem;color:var(--text-muted);font-size:0.9rem">
+          Plain labels for owners who are not IT specialists. You can edit more later inside each business.
+        </p>
+        <div class="login-error" id="modal-error"></div>
+
+        <div class="form-grid">
+          <label class="form-full">
+            Business name *
+            <input type="text" id="f-name" required maxlength="200" placeholder="e.g. Hammad Retail" />
+          </label>
+
+          <label class="form-full">
+            Rough monthly cloud spend
+            <span class="form-label-hint">Use £, $, PKR, or any currency — same number.</span>
+            <input type="number" id="f-budget" min="0" step="1" placeholder="e.g. 1500" />
+          </label>
+
+          <fieldset class="form-full co-fieldset">
+            <legend>How do you mainly use the cloud?</legend>
+            <div class="co-radio-stack">
+              <label><input type="radio" name="f-svc" value="saas" checked /> <span>Ready-made apps (email in the browser, Microsoft 365–style tools)</span></label>
+              <label><input type="radio" name="f-svc" value="paas" /> <span>Online tools to build or host our own software</span></label>
+              <label><input type="radio" name="f-svc" value="iaas" /> <span>Renting servers, storage, or raw compute we manage ourselves</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-full co-fieldset co-fieldset-inline">
+            <legend>Dedicated IT manager?</legend>
+            <div class="co-toggle-line co-toggle-line--even">
+              <label class="co-toggle-option"><input type="radio" name="f-it" id="f-it-yes" value="yes" /> <span>Yes</span></label>
+              <label class="co-toggle-option"><input type="radio" name="f-it" id="f-it-no" value="no" checked /> <span>No</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-full co-fieldset">
+            <legend>What worries you most? (pick any)</legend>
+            <div class="co-check-stack">
+              <label><input type="checkbox" name="f-issue" value="unexpected_bills" /> <span>Surprise bills or sudden jumps in cost</span></label>
+              <label><input type="checkbox" name="f-issue" value="complex_reporting" /> <span>Hard-to-read invoices or usage reports</span></label>
+              <label><input type="checkbox" name="f-issue" value="over_provisioned" /> <span>Paying for more power or storage than we really use</span></label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="modal-cancel">Cancel</button>
+          <button type="button" class="btn btn-primary" id="modal-save">Save business</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="co-footer">
+      <a href="index.html">Cloud Optimizer home</a> ·
+      <a href="resources.html">Resources</a>
+    </footer>
+
+    <script>
+      (function () {
+        var user = CloudResearchAuth.getUser();
+        document.getElementById("user-label").textContent = user ? user.username : "";
+
+        document.getElementById("btn-logout").addEventListener("click", function () {
+          CloudResearchAuth.logout();
+          window.location.href = "login.html";
+        });
+
+        CloudResearchAuth.validateSession().then(function (ok) {
+          if (!ok) window.location.href = "login.html";
+        });
+
+        var listEl = document.getElementById("business-list");
+        var emptyEl = document.getElementById("empty");
+        var loadErr = document.getElementById("load-error");
+        var modal = document.getElementById("modal");
+        var modalErr = document.getElementById("modal-error");
+
+        function showModalErr(msg) {
+          modalErr.textContent = msg || "";
+          modalErr.classList.toggle("visible", !!msg);
+        }
+
+        function openModal() {
+          showModalErr("");
+          modal.classList.add("open");
+          document.getElementById("f-name").value = "";
+          document.querySelector('input[name="f-svc"][value="saas"]').checked = true;
+          document.getElementById("f-budget").value = "";
+          document.getElementById("f-it-no").checked = true;
+          modal.querySelectorAll('input[name="f-issue"]').forEach(function (cb) { cb.checked = false; });
+          document.getElementById("f-name").focus();
+          if (window.lucide) lucide.createIcons();
+        }
+
+        function closeModal() {
+          modal.classList.remove("open");
+          showModalErr("");
+        }
+
+        document.getElementById("btn-new-business").addEventListener("click", openModal);
+        document.getElementById("btn-empty-create").addEventListener("click", openModal);
+        document.getElementById("modal-cancel").addEventListener("click", closeModal);
+        modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+
+        function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+        function num(id) { var v = val(id); return v === "" ? null : Number(v); }
+        function selectedService() { var r = modal.querySelector('input[name="f-svc"]:checked'); return r ? r.value : "saas"; }
+        function selectedIssues() { var out = []; modal.querySelectorAll('input[name="f-issue"]:checked').forEach(function (cb) { out.push(cb.value); }); return out; }
+
+        document.getElementById("modal-save").addEventListener("click", function () {
+          var name = val("f-name");
+          if (!name) { showModalErr("Please enter a business name."); return; }
+          showModalErr("");
+          var body = { name: name, service_level: selectedService(), monthly_cloud_budget: num("f-budget"), has_it_manager: document.getElementById("f-it-yes").checked, primary_issues: selectedIssues() };
+          var btn = document.getElementById("modal-save");
+          btn.disabled = true;
+          CloudResearchAuth.apiFetch("/api/businesses", { method: "POST", body: JSON.stringify(body) })
+            .then(function (r) { return r.json().then(function (data) { if (!r.ok) throw new Error(data.error || "Could not save"); return data; }); })
+            .then(function () { closeModal(); loadList(); })
+            .catch(function (e) { showModalErr(e.message); })
+            .finally(function () { btn.disabled = false; });
+        });
+
+        function serviceLabel(sl) {
+          if (sl === "paas") return "Build & host tools";
+          if (sl === "iaas") return "Servers & storage";
+          return "Ready-made apps";
+        }
+
+        function cardHtml(b) {
+          var sub = serviceLabel(b.service_level);
+          if (b.monthly_cloud_budget != null) sub += " · ~" + escapeHtml(String(Math.round(b.monthly_cloud_budget))) + "/mo";
+          return '<a class="card" href="business.html?id=' + encodeURIComponent(b.id) + '"><h3>' + escapeHtml(b.name) + "</h3><p>" + escapeHtml(sub) + "</p></a>";
+        }
+
+        function escapeHtml(s) { if (!s) return ""; var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+        function loadList() {
+          loadErr.style.display = "none";
+          CloudResearchAuth.apiFetch("/api/businesses")
+            .then(function (r) { return r.json().then(function (data) { if (!r.ok) throw new Error(data.error || "Failed to load"); return data; }); })
+            .then(function (rows) {
+              if (!rows.length) { listEl.innerHTML = ""; emptyEl.classList.remove("hidden"); return; }
+              emptyEl.classList.add("hidden");
+              listEl.innerHTML = rows.map(cardHtml).join("");
+            })
+            .catch(function (e) { loadErr.textContent = e.message; loadErr.style.display = "block"; });
+        }
+
+        loadList();
+      })();
+    </script>
+  </body>
+</html>

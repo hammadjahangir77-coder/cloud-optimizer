@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Research appendix — Cloud Optimizer</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/cloud-optimizer.css" />
+    <script src="js/api-base.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      if (!CloudResearchAuth.isLoggedIn()) { window.location.replace("login.html"); }
+    </script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+    <script src="js/lucide-init.js" defer></script>
+  </head>
+  <body class="co-theme">
+    <header class="co-nav">
+      <div class="co-nav-inner">
+        <a href="index.html" class="co-logo"><i data-lucide="cloud"></i> Cloud Optimizer</a>
+        <nav class="co-links" aria-label="Main">
+          <a href="index.html">Home</a>
+          <a href="calculator.html">Cost Calculator</a>
+          <a href="strategies.html">Optimization Strategies</a>
+          <a href="resources.html">Resources</a>
+        </nav>
+        <div class="co-nav-extra">
+          <a href="dashboard.html" class="co-link-soft">My businesses</a>
+          <span class="co-link-soft" id="user-label"></span>
+          <button type="button" class="co-btn-signin" id="btn-logout">Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <h2>Cloud computing cost optimisation strategies for small businesses</h2>
+        <p class="hero-lead">
+          Written summary for <strong>Unit 16: Computing Research Project</strong> (cloud cost
+          optimisation for small businesses). The main <a href="index.html">Cloud Optimizer</a> site is
+          written for everyday owners; this page keeps the academic structure and references.
+        </p>
+        <dl class="hero-meta">
+          <div class="meta-item">
+            <dt>Student</dt>
+            <dd>Muhammad Hammad Jahangir</dd>
+          </div>
+          <div class="meta-item">
+            <dt>Unit</dt>
+            <dd>16 · Computing Research Project</dd>
+          </div>
+          <div class="meta-item">
+            <dt>Year</dt>
+            <dd>2025–2026</dd>
+          </div>
+          <div class="meta-item">
+            <dt>Tutor</dt>
+            <dd>Sir Umer Aziz Rana</dd>
+          </div>
+        </dl>
+      </section>
+
+      <h2 class="section-head" id="intro">Introduction &amp; background</h2>
+      <div class="cards-grid">
+        <article class="card">
+          <h3>What is cloud computing?</h3>
+          <p>Computing resources—software, storage, servers, databases—delivered over the internet instead of only on local machines. Common examples include Google Drive, Microsoft 365, and Zoom.</p>
+        </article>
+        <article class="card">
+          <h3>Service models</h3>
+          <ul>
+            <li><strong>IaaS</strong> — VMs, storage, networking</li>
+            <li><strong>PaaS</strong> — platforms to build and deploy apps</li>
+            <li><strong>SaaS</strong> — ready-to-use apps in the browser</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Why this research?</h3>
+          <p>Many organisations—especially small businesses—spend more on cloud than necessary. Industry reporting (e.g. Flexera) highlights significant wasted or underutilised spend. Cost optimisation means cutting waste while keeping performance acceptable.</p>
+        </article>
+      </div>
+
+      <h2 class="section-head" id="aims">Aim, objectives &amp; questions</h2>
+      <div class="cards-grid">
+        <article class="card">
+          <h3>Research aim</h3>
+          <p>Identify and assess effective cloud cost optimisation practices feasible for small businesses, and understand why many struggle to control cloud spend.</p>
+        </article>
+        <article class="card">
+          <h3>Objectives</h3>
+          <ul>
+            <li>Describe cloud use among small businesses</li>
+            <li>Find main causes of excessive cloud use</li>
+            <li>Review vendor and academic optimisation guidance</li>
+            <li>Evaluate feasible, cost-effective strategies for SMEs</li>
+            <li>Propose practical steps owners can take</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Research questions</h3>
+          <ul>
+            <li>Why does cloud wastage happen in small firms?</li>
+            <li>What optimisation strategies exist, and how effective are they?</li>
+            <li>Which tools and tactics fit businesses with limited IT resources?</li>
+          </ul>
+        </article>
+      </div>
+
+      <h2 class="section-head" id="architecture">Cloud architecture (concept)</h2>
+      <div class="cards-grid">
+        <article class="card" style="grid-column:1/-1">
+          <h3>How a small business connects to the cloud</h3>
+          <p>Staff reach the provider over the internet; the provider delivers IaaS, PaaS, or SaaS as needed. A cost management layer helps control spend.</p>
+          <div class="arch-block" aria-hidden="true">
+Business · Web / mobile
+        │
+    Internet
+        ▼
+  AWS · Azure · Google Cloud
+        ▼
+ IaaS │ PaaS │ SaaS
+        ▼
+ Cost layer: monitor · scale · budget · reserved · schedule
+          </div>
+        </article>
+      </div>
+
+      <h2 class="section-head" id="literature">Literature themes</h2>
+      <div class="cards-grid">
+        <article class="card">
+          <h3>SME adoption</h3>
+          <p>High and growing use of cloud services; drivers include lower upfront cost, remote work, and access to tools that would be expensive to own outright.</p>
+        </article>
+        <article class="card">
+          <h3>Overspending</h3>
+          <p>Usage-based billing, over-provisioning, complex invoices, and shadow IT (unsanctioned subscriptions) all inflate monthly cost.</p>
+        </article>
+        <article class="card">
+          <h3>Strategies</h3>
+          <p>Right-sizing, reserved instances / savings plans, automated shutdowns for non-production workloads, and vendor cost tools (e.g. AWS Compute Optimizer, Azure Advisor).</p>
+        </article>
+        <article class="card">
+          <h3>Barriers</h3>
+          <p>Limited technical expertise and time; perception that cloud billing is too complex; frequently changing pricing and service catalogues.</p>
+        </article>
+      </div>
+
+      <h2 class="section-head" id="method">Methodology</h2>
+      <div class="cards-grid">
+        <article class="card">
+          <h3>Framework</h3>
+          <p>Saunders' research onion: <strong>positivist</strong> philosophy, <strong>deductive</strong> approach, <strong>secondary / document analysis</strong> strategy, qualitative emphasis, cross-sectional time horizon, <strong>thematic analysis</strong> of sources.</p>
+        </article>
+        <article class="card">
+          <h3>Data sources</h3>
+          <ul>
+            <li>Peer-reviewed articles (e.g. 2021–2025)</li>
+            <li>Industry reports (Flexera, Gartner, CSA)</li>
+            <li>AWS, Azure, Google Cloud documentation</li>
+            <li>Published SME cost-reduction examples</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Ethics</h3>
+          <p>No human participants; published sources only; accurate citation (Harvard); no fabricated statistics.</p>
+        </article>
+      </div>
+
+      <h2 class="section-head" id="timeline">Research timeline</h2>
+      <div class="timeline">
+        <div class="timeline-row"><div class="timeline-week">10–14 Mar</div><div class="timeline-body"><strong>Topic approval</strong><span>Finalise topic and submit for panel approval</span></div></div>
+        <div class="timeline-row"><div class="timeline-week">15–19 Mar</div><div class="timeline-body"><strong>Literature review</strong><span>Read papers, reports, and provider documentation</span></div></div>
+        <div class="timeline-row"><div class="timeline-week">20–22 Mar</div><div class="timeline-body"><strong>Data collection</strong><span>Select and organise secondary sources and cases</span></div></div>
+        <div class="timeline-row"><div class="timeline-week">23–25 Mar</div><div class="timeline-body"><strong>Data analysis</strong><span>Thematic analysis across sources</span></div></div>
+        <div class="timeline-row"><div class="timeline-week">26–29 Mar</div><div class="timeline-body"><strong>Report</strong><span>Write full report with findings and recommendations</span></div></div>
+        <div class="timeline-row"><div class="timeline-week">30–31 Mar</div><div class="timeline-body"><strong>Presentation</strong><span>Prepare and deliver final defence</span></div></div>
+      </div>
+
+      <h2 class="section-head" id="refs">References (sample)</h2>
+      <ul class="ref-list">
+        <li>Flexera (2023) <em>State of the Cloud Report 2023</em>.</li>
+        <li>Amazon Web Services (2023) AWS Cost Optimization.</li>
+        <li>Microsoft Azure (2022) Cost Management and Billing Documentation.</li>
+        <li>Kumar, R. and Lu, B. (2021) 'Cloud computing research: A review…', <em>International Journal of Information Management</em>, 49, pp. 139–152.</li>
+        <li>Oliveira, T., Thomas, M. and Espadanal, M. (2022) 'Assessing the determinants of cloud computing adoption…', <em>Information &amp; Management</em>, 51(5), pp. 497–510.</li>
+      </ul>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-top:1rem">Full reference list is in your Word proposal document.</p>
+    </main>
+
+    <footer class="co-footer">
+      Unit 16 · Computing Research Project ·
+      <a href="index.html">Cloud Optimizer home</a>
+    </footer>
+
+    <script>
+      (function () {
+        var user = CloudResearchAuth.getUser();
+        var label = document.getElementById("user-label");
+        if (label && user) label.textContent = user.username;
+        document.getElementById("btn-logout").addEventListener("click", function () {
+          CloudResearchAuth.logout();
+          window.location.href = "login.html";
+        });
+      })();
+    </script>
+  </body>
+</html>

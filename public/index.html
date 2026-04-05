@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloud Optimizer</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/cloud-optimizer.css" />
+    <script src="js/api-base.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+    <script src="js/lucide-init.js" defer></script>
+  </head>
+  <body class="co-theme">
+    <header class="co-nav">
+      <div class="co-nav-inner">
+        <a href="index.html" class="co-logo"><i data-lucide="cloud"></i> Cloud Optimizer</a>
+        <nav class="co-links" aria-label="Main">
+          <a href="index.html" aria-current="page">Home</a>
+          <a href="calculator.html">Cost Calculator</a>
+          <a href="strategies.html">Optimization Strategies</a>
+          <a href="resources.html">Resources</a>
+        </nav>
+        <div class="co-nav-extra">
+          <a href="dashboard.html" class="co-link-soft">My businesses</a>
+          <a
+            href="login.html"
+            id="nav-signin"
+            class="co-btn-signin"
+            style="text-decoration: none; display: inline-block"
+            >Sign in</a
+          >
+          <span
+            id="nav-user-bar"
+            style="display: none; align-items: center; gap: 0.5rem; flex-wrap: wrap"
+          >
+            <span class="co-link-soft" id="user-label"></span>
+            <button type="button" class="co-btn-signin" id="btn-logout">Log out</button>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="co-hero">
+        <h1>Cloud cost clarity for small businesses</h1>
+        <p>
+          Explore calculators and strategies, then sign in to save business profiles and run the cloud
+          advisor. Everything runs on your machine when you use
+          <strong>npm start</strong> — accounts live in the local SQLite database.
+        </p>
+        <div class="co-cta-row">
+          <a href="login.html" class="co-btn-primary" id="cta-primary">Sign in</a>
+          <a href="calculator.html" class="co-btn-outline">Cost calculator</a>
+          <a href="strategies.html" class="co-btn-outline">Optimization strategies</a>
+          <a href="resources.html" class="co-btn-outline">Resources</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="co-footer">
+      <a href="research.html">Research appendix</a> ·
+      <a href="login.html">Sign in</a>
+    </footer>
+
+    <script>
+      (function () {
+        var loggedIn = CloudResearchAuth.isLoggedIn();
+        var cta = document.getElementById("cta-primary");
+        if (loggedIn) {
+          document.getElementById("nav-signin").style.display = "none";
+          var bar = document.getElementById("nav-user-bar");
+          bar.style.display = "inline-flex";
+          var user = CloudResearchAuth.getUser();
+          document.getElementById("user-label").textContent = user ? user.username : "";
+          document.getElementById("btn-logout").addEventListener("click", function () {
+            CloudResearchAuth.logout();
+          });
+          cta.href = "dashboard.html";
+          cta.textContent = "Open my businesses";
+        } else {
+          cta.href = "login.html";
+          cta.textContent = "Sign in";
+        }
+      })();
+    </script>
+  </body>
+</html>

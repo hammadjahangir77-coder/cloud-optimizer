@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business dashboard — Cloud Optimizer</title>
+    <link rel="stylesheet" href="css/cloud-optimizer.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+    <script src="js/lucide-init.js" defer></script>
+    <script src="js/api-base.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      if (!CloudResearchAuth.isLoggedIn()) {
+        window.location.replace("login.html");
+      }
+    </script>
+  </head>
+  <body>
+    <header class="co-nav">
+      <div class="co-nav-inner">
+        <a href="index.html" class="co-logo"><i data-lucide="cloud"></i> Cloud Optimizer</a>
+        <nav class="co-links" aria-label="Main">
+          <a href="index.html">Home</a>
+          <a href="calculator.html">Cost Calculator</a>
+          <a href="strategies.html">Optimization Strategies</a>
+          <a href="resources.html">Resources</a>
+        </nav>
+        <div class="co-nav-extra">
+          <a href="dashboard.html" class="co-link-soft">My businesses</a>
+          <button type="button" class="co-btn-outline" id="btn-logout" style="padding: 0.45rem 1rem; font-size: 0.9rem">
+            Log out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <h1 class="site-title">
+          <span style="color: var(--accent)">Business</span>
+          <span id="header-business-name">Name</span>
+        </h1>
+        <nav class="nav-actions" aria-label="Workspace">
+          <a href="dashboard.html">← All businesses</a>
+          <a href="index.html">Cloud Optimizer home</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="login-error visible" id="page-error" style="display: none; margin-bottom: 1rem"></div>
+
+      <div id="view-mode">
+        <div class="business-hero">
+          <div class="toolbar-row" style="margin-bottom: 0.5rem">
+            <button type="button" class="btn btn-primary" id="btn-edit">Edit details</button>
+            <button type="button" class="btn btn-danger" id="btn-delete">Delete business</button>
+          </div>
+          <h2 id="v-name"></h2>
+          <p class="tagline" id="v-tagline"></p>
+          <div class="business-meta-row" id="v-badges"></div>
+        </div>
+        <div class="detail-grid" id="v-details"></div>
+
+        <section class="advisor-shell card" id="advisor-section" aria-labelledby="advisor-heading">
+          <h2 id="advisor-heading" style="margin: 0 0 0.5rem; font-size: 1.25rem">
+            Cloud cost advisor
+          </h2>
+          <p class="advisor-intro">
+            Answer a few questions about how your business uses (or plans to use) the cloud.
+            The tool ranks <strong>AWS</strong>, <strong>Azure</strong>, and <strong>Google Cloud</strong> for your
+            profile and lists <strong>cost optimisation tactics</strong> from your Unit 16 research themes — with
+            <strong>illustrative savings ranges</strong> tied to cited sources (not guarantees).
+          </p>
+
+          <form id="advisor-form" class="advisor-form">
+            <h3 class="advisor-sub">What are your main workloads?</h3>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" name="wl" value="web" /> Customer-facing website / e-commerce</label>
+              <label><input type="checkbox" name="wl" value="internal" /> Internal apps &amp; file sharing</label>
+              <label><input type="checkbox" name="wl" value="devtest" /> Development &amp; test environments</label>
+              <label><input type="checkbox" name="wl" value="analytics" /> Data / analytics / reporting</label>
+              <label><input type="checkbox" name="wl" value="microsoft_ecosystem" /> Heavy Microsoft 365 / Windows stack</label>
+            </div>
+
+            <div class="form-grid" style="margin-top: 1rem">
+              <label>
+                In-house IT / cloud skill
+                <select id="adv-skill">
+                  <option value="low">Low — we need simple, guided options</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High — we can run IaC and tune services</option>
+                </select>
+              </label>
+              <label>
+                Traffic / usage pattern
+                <select id="adv-traffic">
+                  <option value="spiky">Spiky (campaigns, seasonal peaks)</option>
+                  <option value="mixed" selected>Mixed</option>
+                  <option value="steady">Steady baseline most of the time</option>
+                </select>
+              </label>
+              <label>
+                Confidence reading cloud bills
+                <select id="adv-billing">
+                  <option value="low">Low — bills are confusing</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High — we track cost weekly/monthly</option>
+                </select>
+              </label>
+              <label>
+                Top priority right now
+                <select id="adv-priority">
+                  <option value="cost" selected>Lowest sustainable cost</option>
+                  <option value="simplicity">Simplicity &amp; support</option>
+                  <option value="scale">Growth &amp; scale / global reach</option>
+                </select>
+              </label>
+            </div>
+
+            <p class="advisor-hint">
+              Tip: set <strong>monthly cloud budget</strong> in business details to unlock illustrative
+              “money back” scenarios (based on industry waste bands from your proposal — still not a promise).
+            </p>
+
+            <div class="toolbar-row" style="margin-top: 1rem; flex-wrap: wrap">
+              <button type="submit" class="btn btn-primary" id="btn-advisor-run">
+                Get recommendations
+              </button>
+              <label class="ai-option hidden" id="ai-wrap">
+                <input type="checkbox" id="adv-ai" />
+                Also add an <strong>AI-written summary</strong> (OpenAI — requires API key on server)
+              </label>
+            </div>
+            <div class="login-error" id="advisor-error"></div>
+          </form>
+
+          <div id="advisor-results" class="advisor-results" hidden></div>
+        </section>
+      </div>
+
+      <div id="edit-mode" class="hidden">
+        <div class="card" style="max-width: 800px; margin: 0 auto">
+          <h3 style="margin-top: 0">Edit business</h3>
+          <div class="login-error" id="edit-error"></div>
+          <div class="form-grid" style="margin-top: 1rem">
+            <label class="form-full">
+              Business name *
+              <input type="text" id="e-name" required maxlength="200" />
+            </label>
+
+            <fieldset class="form-full co-fieldset" style="border-color: var(--border)">
+              <legend>How do you mainly use the cloud?</legend>
+              <div class="co-radio-stack">
+                <label
+                  ><input type="radio" name="e-svc" value="saas" /> Ready-made apps (browser / Microsoft
+                  365–style)</label
+                >
+                <label
+                  ><input type="radio" name="e-svc" value="paas" /> Tools to build or host our own
+                  software</label
+                >
+                <label
+                  ><input type="radio" name="e-svc" value="iaas" /> Renting servers, storage, or raw
+                  power</label
+                >
+              </div>
+            </fieldset>
+
+            <label class="form-full">
+              Rough monthly cloud spend (any currency)
+              <input type="number" id="e-budget" min="0" step="1" />
+            </label>
+
+            <div class="form-full">
+              <span style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem"
+                >Dedicated IT manager?</span
+              >
+              <label style="margin-right: 1rem; cursor: pointer"
+                ><input type="radio" name="e-it" id="e-it-yes" value="yes" /> Yes</label
+              >
+              <label style="cursor: pointer"
+                ><input type="radio" name="e-it" id="e-it-no" value="no" /> No</label
+              >
+            </div>
+
+            <fieldset class="form-full co-fieldset" style="border-color: var(--border)">
+              <legend>Top worries (pick any)</legend>
+              <div class="co-check-stack">
+                <label
+                  ><input type="checkbox" name="e-issue" value="unexpected_bills" /> Surprise bills</label
+                >
+                <label
+                  ><input type="checkbox" name="e-issue" value="complex_reporting" /> Confusing
+                  reports</label
+                >
+                <label
+                  ><input type="checkbox" name="e-issue" value="over_provisioned" /> Paying for more than
+                  we use</label
+                >
+              </div>
+            </fieldset>
+
+            <label>
+              Legal name
+              <input type="text" id="e-legal" maxlength="200" />
+            </label>
+            <label>
+              Industry
+              <input type="text" id="e-industry" maxlength="120" />
+            </label>
+            <label>
+              Founded year
+              <input type="number" id="e-year" min="1800" max="2100" />
+            </label>
+            <label class="form-full">
+              Tagline
+              <input type="text" id="e-tagline" maxlength="300" />
+            </label>
+            <label class="form-full">
+              Description
+              <textarea id="e-desc" rows="4" maxlength="4000"></textarea>
+            </label>
+            <label>
+              Website
+              <input type="url" id="e-web" />
+            </label>
+            <label>
+              Email
+              <input type="email" id="e-email" />
+            </label>
+            <label>
+              Phone
+              <input type="tel" id="e-phone" />
+            </label>
+            <label>
+              Team size
+              <input type="number" id="e-employees" min="0" />
+            </label>
+            <label class="form-full">
+              Cloud providers
+              <input type="text" id="e-providers" maxlength="500" />
+            </label>
+            <label class="form-full">
+              Address
+              <input type="text" id="e-address" maxlength="500" />
+            </label>
+            <label class="form-full">
+              Notes
+              <textarea id="e-notes" rows="3" maxlength="8000"></textarea>
+            </label>
+          </div>
+          <div class="modal-actions" style="margin-top: 1.25rem">
+            <button type="button" class="btn btn-ghost" id="btn-cancel-edit">Cancel</button>
+            <button type="button" class="btn btn-primary" id="btn-save-edit">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <a href="dashboard.html">Back to business list</a>
+    </footer>
+
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var id = Number(params.get("id"));
+        if (!id) {
+          window.location.href = "dashboard.html";
+          return;
+        }
+
+        document.getElementById("btn-logout").addEventListener("click", function () {
+          CloudResearchAuth.logout();
+          window.location.href = "login.html";
+        });
+
+        CloudResearchAuth.validateSession().then(function (ok) {
+          if (!ok) window.location.href = "login.html";
+        });
+
+        var pageErr = document.getElementById("page-error");
+        var editErr = document.getElementById("edit-error");
+
+        function showPageErr(msg) {
+          pageErr.textContent = msg || "";
+          pageErr.style.display = msg ? "block" : "none";
+        }
+        function showEditErr(msg) {
+          editErr.textContent = msg || "";
+          editErr.classList.toggle("visible", !!msg);
+        }
+
+        function esc(s) {
+          if (s == null || s === "") return "—";
+          var d = document.createElement("div");
+          d.textContent = String(s);
+          return d.innerHTML;
+        }
+
+        function section(title, html) {
+          return (
+            '<div class="detail-card"><h3>' +
+            esc(title) +
+            "</h3><p>" +
+            html +
+            "</p></div>"
+          );
+        }
+
+        function parseIssues(raw) {
+          if (!raw) return [];
+          try {
+            var a = typeof raw === "string" ? JSON.parse(raw) : raw;
+            return Array.isArray(a) ? a : [];
+          } catch (e) {
+            return [];
+          }
+        }
+
+        function issueLabel(key) {
+          var map = {
+            unexpected_bills: "Surprise bills or sudden cost jumps",
+            complex_reporting: "Hard-to-read invoices or usage reports",
+            over_provisioned: "Paying for more computer power or storage than we use",
+          };
+          return map[key] || key;
+        }
+
+        function serviceLabelLong(sl) {
+          if (sl === "paas") return "Online tools to build or host our own software (PaaS-style).";
+          if (sl === "iaas") return "Renting servers, storage, or raw computing power (IaaS-style).";
+          return "Ready-made apps in the browser (SaaS-style, e.g. email or Microsoft 365).";
+        }
+
+        var current = null;
+
+        function fillView(b) {
+          document.title = b.name + " — Cloud Optimizer";
+          document.getElementById("header-business-name").textContent = b.name;
+          document.getElementById("v-name").textContent = b.name;
+          document.getElementById("v-tagline").textContent = b.tagline || "";
+          document.getElementById("v-tagline").style.display = b.tagline ? "block" : "none";
+
+          var badges = document.getElementById("v-badges");
+          badges.innerHTML = "";
+          if (b.industry)
+            badges.innerHTML += '<span class="badge">' + esc(b.industry) + "</span>";
+          if (b.founded_year)
+            badges.innerHTML += '<span class="badge">Since ' + esc(b.founded_year) + "</span>";
+          if (b.employee_count != null)
+            badges.innerHTML +=
+              '<span class="badge">' + esc(b.employee_count) + " people</span>";
+
+          var parts = [];
+          if (b.service_level)
+            parts.push(section("How you use the cloud", esc(serviceLabelLong(b.service_level))));
+          if (b.has_it_manager != null)
+            parts.push(
+              section(
+                "Dedicated IT manager",
+                b.has_it_manager ? "Yes — someone owns tech spending day to day." : "No — the owner or office manager usually handles bills."
+              )
+            );
+          var iss = parseIssues(b.primary_issues);
+          if (iss.length)
+            parts.push(
+              section(
+                "Top worries",
+                iss
+                  .map(function (k) {
+                    return "• " + esc(issueLabel(k));
+                  })
+                  .join("<br/>")
+              )
+            );
+          if (b.legal_name && b.legal_name !== b.name)
+            parts.push(section("Legal name", esc(b.legal_name)));
+          if (b.description) parts.push(section("About", esc(b.description)));
+          if (b.website)
+            parts.push(
+              section(
+                "Website",
+                '<a href="' + esc(b.website) + '" style="color:var(--accent)">' + esc(b.website) + "</a>"
+              )
+            );
+          if (b.email) parts.push(section("Email", esc(b.email)));
+          if (b.phone) parts.push(section("Phone", esc(b.phone)));
+          if (b.address) parts.push(section("Address", esc(b.address)));
+          if (b.monthly_cloud_budget != null)
+            parts.push(
+              section(
+                "Cloud budget (monthly)",
+                esc(
+                  typeof b.monthly_cloud_budget === "number"
+                    ? b.monthly_cloud_budget.toLocaleString(undefined, {
+                        style: "currency",
+                        currency: "USD",
+                        maximumFractionDigits: 0,
+                      })
+                    : b.monthly_cloud_budget
+                )
+              )
+            );
+          if (b.cloud_providers)
+            parts.push(section("Cloud providers", esc(b.cloud_providers)));
+          if (b.notes) parts.push(section("Notes", esc(b.notes)));
+          parts.push(
+            section(
+              "Record",
+              "Created: " + esc(b.created_at || "—") + "<br/>Updated: " + esc(b.updated_at || "—")
+            )
+          );
+
+          document.getElementById("v-details").innerHTML = parts.join("");
+          fillAdvisorForm(parseSavedAnswers(b));
+        }
+
+        function fillEdit(b) {
+          function set(id, v) {
+            var el = document.getElementById(id);
+            if (el) el.value = v != null && v !== "" ? v : "";
+          }
+          set("e-name", b.name);
+          var sl = b.service_level || "saas";
+          var svr = document.querySelector('input[name="e-svc"][value="' + sl + '"]');
+          if (svr) svr.checked = true;
+          else document.querySelector('input[name="e-svc"][value="saas"]').checked = true;
+          if (b.has_it_manager) {
+            document.getElementById("e-it-yes").checked = true;
+          } else {
+            document.getElementById("e-it-no").checked = true;
+          }
+          var iss = parseIssues(b.primary_issues);
+          document.querySelectorAll('input[name="e-issue"]').forEach(function (cb) {
+            cb.checked = iss.indexOf(cb.value) !== -1;
+          });
+          set("e-legal", b.legal_name);
+          set("e-tagline", b.tagline);
+          set("e-industry", b.industry);
+          set("e-desc", b.description);
+          set("e-year", b.founded_year);
+          set("e-web", b.website);
+          set("e-email", b.email);
+          set("e-phone", b.phone);
+          set("e-address", b.address);
+          set("e-employees", b.employee_count);
+          set("e-budget", b.monthly_cloud_budget);
+          set("e-providers", b.cloud_providers);
+          set("e-notes", b.notes);
+        }
+
+        function load() {
+          showPageErr("");
+          CloudResearchAuth.apiFetch("/api/businesses/" + id)
+            .then(function (r) {
+              return r.json().then(function (data) {
+                if (!r.ok) throw new Error(data.error || "Not found");
+                return data;
+              });
+            })
+            .then(function (b) {
+              current = b;
+              fillView(b);
+            })
+            .catch(function (e) {
+              showPageErr(e.message);
+            });
+        }
+
+        document.getElementById("btn-edit").addEventListener("click", function () {
+          if (!current) return;
+          showEditErr("");
+          fillEdit(current);
+          document.getElementById("view-mode").classList.add("hidden");
+          document.getElementById("edit-mode").classList.remove("hidden");
+        });
+
+        document.getElementById("btn-cancel-edit").addEventListener("click", function () {
+          document.getElementById("edit-mode").classList.add("hidden");
+          document.getElementById("view-mode").classList.remove("hidden");
+        });
+
+        function g(id) {
+          return document.getElementById(id).value.trim();
+        }
+        function n(id) {
+          var v = g(id);
+          return v === "" ? null : Number(v);
+        }
+
+        document.getElementById("btn-save-edit").addEventListener("click", function () {
+          var name = g("e-name");
+          if (!name) {
+            showEditErr("Name is required.");
+            return;
+          }
+          showEditErr("");
+          var svcEl = document.querySelector('input[name="e-svc"]:checked');
+          var issues = [];
+          document.querySelectorAll('input[name="e-issue"]:checked').forEach(function (cb) {
+            issues.push(cb.value);
+          });
+          var body = {
+            name: name,
+            service_level: svcEl ? svcEl.value : "saas",
+            has_it_manager: document.getElementById("e-it-yes").checked,
+            primary_issues: issues,
+            legal_name: g("e-legal") || null,
+            tagline: g("e-tagline") || null,
+            industry: g("e-industry") || null,
+            description: g("e-desc") || null,
+            founded_year: n("e-year"),
+            website: g("e-web") || null,
+            email: g("e-email") || null,
+            phone: g("e-phone") || null,
+            address: g("e-address") || null,
+            employee_count: n("e-employees"),
+            monthly_cloud_budget: n("e-budget"),
+            cloud_providers: g("e-providers") || null,
+            notes: g("e-notes") || null,
+          };
+          var btn = document.getElementById("btn-save-edit");
+          btn.disabled = true;
+          CloudResearchAuth.apiFetch("/api/businesses/" + id, {
+            method: "PATCH",
+            body: JSON.stringify(body),
+          })
+            .then(function (r) {
+              return r.json().then(function (data) {
+                if (!r.ok) throw new Error(data.error || "Save failed");
+                return data;
+              });
+            })
+            .then(function (b) {
+              current = b;
+              fillView(b);
+              document.getElementById("edit-mode").classList.add("hidden");
+              document.getElementById("view-mode").classList.remove("hidden");
+            })
+            .catch(function (e) {
+              showEditErr(e.message);
+            })
+            .finally(function () {
+              btn.disabled = false;
+            });
+        });
+
+        document.getElementById("btn-delete").addEventListener("click", function () {
+          if (!current) return;
+          if (
+            !confirm(
+              "Delete “" + current.name + "”? This cannot be undone."
+            )
+          )
+            return;
+          CloudResearchAuth.apiFetch("/api/businesses/" + id, { method: "DELETE" })
+            .then(function (r) {
+              if (r.status === 204) {
+                window.location.href = "dashboard.html";
+                return;
+              }
+              return r.json().then(function (data) {
+                throw new Error(data.error || "Delete failed");
+              });
+            })
+            .catch(function (e) {
+              showPageErr(e.message);
+            });
+        });
+
+        /* ——— Cloud advisor (aligned with research proposal) ——— */
+        var advErr = document.getElementById("advisor-error");
+        var advResults = document.getElementById("advisor-results");
+        var advForm = document.getElementById("advisor-form");
+
+        function showAdvErr(msg) {
+          advErr.textContent = msg || "";
+          advErr.classList.toggle("visible", !!msg);
+        }
+
+        function fmtBold(s) {
+          return esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+        }
+
+        function defaultAnswers() {
+          return {
+            workloads: ["web"],
+            it_skill: "medium",
+            traffic_pattern: "mixed",
+            billing_confidence: "medium",
+            priority: "cost",
+          };
+        }
+
+        function parseSavedAnswers(b) {
+          if (!b || !b.advisor_answers) return defaultAnswers();
+          try {
+            var a = JSON.parse(b.advisor_answers);
+            var d = defaultAnswers();
+            return {
+              workloads: Array.isArray(a.workloads) && a.workloads.length ? a.workloads : d.workloads,
+              it_skill: a.it_skill || d.it_skill,
+              traffic_pattern: a.traffic_pattern || d.traffic_pattern,
+              billing_confidence: a.billing_confidence || d.billing_confidence,
+              priority: a.priority || d.priority,
+            };
+          } catch (e) {
+            return defaultAnswers();
+          }
+        }
+
+        function fillAdvisorForm(a) {
+          advForm.querySelectorAll('input[name="wl"]').forEach(function (cb) {
+            cb.checked = a.workloads.indexOf(cb.value) !== -1;
+          });
+          document.getElementById("adv-skill").value = a.it_skill;
+          document.getElementById("adv-traffic").value = a.traffic_pattern;
+          document.getElementById("adv-billing").value = a.billing_confidence;
+          document.getElementById("adv-priority").value = a.priority;
+        }
+
+        function collectAdvisorAnswers() {
+          var wl = [];
+          advForm.querySelectorAll('input[name="wl"]:checked').forEach(function (cb) {
+            wl.push(cb.value);
+          });
+          if (!wl.length) wl = ["web"];
+          return {
+            workloads: wl,
+            it_skill: document.getElementById("adv-skill").value,
+            traffic_pattern: document.getElementById("adv-traffic").value,
+            billing_confidence: document.getElementById("adv-billing").value,
+            priority: document.getElementById("adv-priority").value,
+          };
+        }
+
+        function moneyRange(low, high) {
+          return (
+            esc(Number(low).toFixed(0)) +
+            " – " +
+            esc(Number(high).toFixed(0)) +
+            " USD / month"
+          );
+        }
+
+        function renderReport(payload) {
+          var report = payload.report;
+          var ai = payload.aiNarrative;
+          var aiErr = payload.aiError;
+          var parts = [];
+
+          parts.push('<div class="advisor-results-inner">');
+
+          parts.push('<h3 class="advisor-sub">How this links to your research</h3><ul class="advisor-list">');
+          report.topicAlignment.forEach(function (t) {
+            parts.push("<li>" + fmtBold(t) + "</li>");
+          });
+          parts.push("</ul>");
+
+          parts.push('<h3 class="advisor-sub">Suggested cloud platforms for your profile</h3>');
+          parts.push('<p class="advisor-note">Ranking is a <strong>heuristic</strong> from your answers — always validate pricing, regions, and compliance with each vendor before you commit.</p>');
+          parts.push('<div class="provider-compare">');
+
+          report.allProviders.forEach(function (p) {
+            var cls = p.rank === 1 ? "provider-card top" : "provider-card";
+            parts.push('<div class="' + cls + '">');
+            parts.push("<h4>#" + p.rank + " — " + esc(p.name) + "</h4>");
+            parts.push("<p class=\"verdict\">" + esc(p.verdict) + "</p>");
+            parts.push("<p><strong>Why it might fit</strong></p><ul>");
+            p.reasons.forEach(function (r) {
+              parts.push("<li>" + fmtBold(r) + "</li>");
+            });
+            parts.push("</ul><p><strong>Watch-outs</strong></p><ul>");
+            p.cautions.forEach(function (c) {
+              parts.push("<li>" + fmtBold(c) + "</li>");
+            });
+            parts.push("</ul></div>");
+          });
+          parts.push("</div>");
+
+          if (report.illustrativeReclaim) {
+            var ir = report.illustrativeReclaim;
+            parts.push('<h3 class="advisor-sub">Illustrative “money back” scenario</h3>');
+            parts.push('<div class="savings-scenario card" style="border-style: dashed">');
+            parts.push("<p>" + fmtBold(ir.flexeraStyleWaste.note) + "</p>");
+            parts.push(
+              "<p>Using an <strong>assumed waste band</strong> of " +
+                ir.assumedWasteBandPercent.low +
+                "–" +
+                ir.assumedWasteBandPercent.high +
+                "% of monthly spend, and assuming you can reclaim " +
+                ir.reclaimableShareOfWaste.low +
+                "–" +
+                ir.reclaimableShareOfWaste.high +
+                "% of that waste through better governance:</p>"
+            );
+            parts.push(
+              "<p><strong>Possible monthly reclaim (illustrative):</strong> " +
+                moneyRange(ir.monthlyReclaimPotential.low, ir.monthlyReclaimPotential.high) +
+                "</p>"
+            );
+            parts.push(
+              "<p><strong>Possible annual reclaim (illustrative):</strong> " +
+                esc(Number(ir.annualReclaimPotential.low).toFixed(0)) +
+                " – " +
+                esc(Number(ir.annualReclaimPotential.high).toFixed(0)) +
+                " USD / year</p>"
+            );
+            parts.push("<p class=\"disclaimer\">" + esc(ir.disclaimer) + "</p>");
+            parts.push("</div>");
+          } else {
+            parts.push(
+              '<p class="advisor-note">Add a <strong>monthly cloud budget</strong> on this business to see illustrative reclaim amounts.</p>'
+            );
+          }
+
+          parts.push('<h3 class="advisor-sub">Cost optimisation tactics (from your literature themes)</h3>');
+          parts.push('<div class="strategy-grid">');
+          report.optimizationStrategies.forEach(function (s) {
+            parts.push('<article class="strategy-card"><h4>' + esc(s.title) + "</h4>");
+            parts.push("<p>" + fmtBold(s.summary) + "</p>");
+            parts.push(
+              "<p class=\"savings-band\"><strong>Typical savings band discussed in sources:</strong> " +
+                s.savingsRangePercent.low +
+                "–" +
+                s.savingsRangePercent.high +
+                "% <span class=\"muted\">(context-dependent)</span></p>"
+            );
+            parts.push("<p>" + fmtBold(s.savingsNote) + "</p>");
+            parts.push("<p class=\"muted\"><strong>Sources:</strong> " + esc(s.sources.join(" · ")) + "</p>");
+            parts.push("</article>");
+          });
+          parts.push("</div>");
+
+          parts.push('<h3 class="advisor-sub">Reference trail</h3><ul class="advisor-list muted">');
+          report.citationsFooter.forEach(function (c) {
+            parts.push("<li>" + esc(c) + "</li>");
+          });
+          parts.push("</ul>");
+
+          if (ai) {
+            var aiHtml = esc(ai)
+              .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+              .replace(/\n/g, "<br/>");
+            parts.push('<div class="ai-box"><h4>AI summary</h4><p class="ai-text">' + aiHtml + "</p></div>");
+            parts.push("<p class=\"muted\">Generated by an external model — verify all numbers against your invoices.</p>");
+          } else if (aiErr) {
+            parts.push(
+              '<div class="login-error visible" style="display:block;margin-top:1rem">' +
+                esc(aiErr) +
+                "</div>"
+            );
+          }
+
+          parts.push("</div>");
+          advResults.innerHTML = parts.join("");
+          advResults.hidden = false;
+          advResults.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        fetch(CloudResearchAuth.apiUrl("/api/advisor/capabilities"))
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (cap) {
+            if (cap.openai) {
+              document.getElementById("ai-wrap").classList.remove("hidden");
+            }
+          })
+          .catch(function () {});
+
+        advForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          showAdvErr("");
+          var body = {
+            answers: collectAdvisorAnswers(),
+            includeAi: document.getElementById("adv-ai").checked,
+          };
+          var btn = document.getElementById("btn-advisor-run");
+          btn.disabled = true;
+          CloudResearchAuth.apiFetch("/api/businesses/" + id + "/advisor", {
+            method: "POST",
+            body: JSON.stringify(body),
+          })
+            .then(function (r) {
+              return r.json().then(function (data) {
+                if (!r.ok) throw new Error(data.error || "Advisor failed");
+                return data;
+              });
+            })
+            .then(function (data) {
+              current.advisor_answers = JSON.stringify(body.answers);
+              renderReport(data);
+            })
+            .catch(function (err) {
+              showAdvErr(err.message);
+            })
+            .finally(function () {
+              btn.disabled = false;
+            });
+        });
+
+        load();
+      })();
+    </script>
+  </body>
+</html>

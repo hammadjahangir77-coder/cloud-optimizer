@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign in — Cloud Optimizer</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-auth-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/firebase-init.js"></script>
+  </head>
+  <body class="login-page">
+    <div class="login-shell">
+      <div class="login-brand">
+        <div class="logo">Cloud Optimizer</div>
+        <h1>Sign in to save businesses</h1>
+        <p>
+          For owners who want to keep cloud profiles and use the advisor. Public tools (calculator,
+          strategies, checklist) stay on the
+          <a href="index.html" style="color: var(--accent)">home page</a>.
+        </p>
+        <p class="login-hint" style="margin-top: 0.75rem">
+          Username/password and Firebase sign-in still need the API: run <code>npm start</code>, then open
+          <code>http://localhost:3000/login.html</code> (port may differ). Firebase Hosting alone cannot call
+          <code>/api</code>.
+        </p>
+      </div>
+
+      <div
+        class="login-host-warning"
+        id="login-host-warning"
+        role="status"
+        style="display: none"
+      >
+        <strong>No API URL configured for this host.</strong> On Firebase Hosting the pages are static only.
+        Either run <code>npm start</code> and open <code>http://localhost:3000/login.html</code>, or deploy your
+        Express server elsewhere and set <code>API_BASE_URL</code> in <code>public/js/api-base.js</code>, then
+        redeploy Hosting.
+      </div>
+
+      <div class="login-tabs" role="tablist">
+        <button type="button" class="active" id="tab-signin" aria-selected="true">
+          Sign in
+        </button>
+        <button type="button" id="tab-register" aria-selected="false">
+          Create account
+        </button>
+      </div>
+
+      <form class="login-card" id="form-signin" novalidate>
+        <div class="login-error" id="error-signin" role="alert"></div>
+        <label>
+          Username or email (local account)
+          <input
+            type="text"
+            name="username"
+            id="signin-user"
+            autocomplete="username"
+            required
+          />
+        </label>
+        <label>
+          Password
+          <input
+            type="password"
+            name="password"
+            id="signin-pass"
+            autocomplete="current-password"
+            required
+          />
+        </label>
+        <button type="submit" class="btn btn-primary" style="width: 100%" id="btn-signin">
+          Sign in
+        </button>
+        <p class="login-sub-actions">
+          <button type="button" class="link-like" id="btn-forgot">Forgot password? (Firebase email only)</button>
+        </p>
+        <div id="forgot-panel" class="login-forgot-panel hidden">
+          <label>
+            Email on your Firebase account
+            <input type="email" id="forgot-email" autocomplete="email" placeholder="you@gmail.com" />
+          </label>
+          <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem" id="forgot-send">
+            Send reset link
+          </button>
+          <p class="login-hint" style="margin-top: 0.5rem">
+            Only for accounts created with <strong>Firebase email</strong> below. Local username/password accounts
+            are stored only in SQLite and are not reset here.
+          </p>
+        </div>
+        <p class="login-divider"><span>or</span></p>
+        <button type="button" class="btn btn-google" id="btn-google-signin">Continue with Google</button>
+        <p class="login-hint" style="margin-top: 0.75rem">
+          New to Cloud Optimizer? <button type="button" class="link-like" id="link-to-register">Create an account</button>
+        </p>
+        <p class="login-hint">
+          Local accounts use the SQLite database (<code>data/app.db</code>). Google / Firebase email sync through
+          the server using a Firebase service account file.
+        </p>
+      </form>
+
+      <form class="login-card hidden" id="form-register" novalidate>
+        <div class="login-error" id="error-register" role="alert"></div>
+        <p class="login-hint" style="margin-top: 0">
+          <strong>Local account</strong> — username and password stored in this app’s database.
+        </p>
+        <label>
+          Username
+          <input
+            type="text"
+            name="username"
+            id="reg-user"
+            autocomplete="username"
+            minlength="2"
+            required
+          />
+        </label>
+        <label>
+          Password (min 6 characters)
+          <input
+            type="password"
+            name="password"
+            id="reg-pass"
+            autocomplete="new-password"
+            minlength="6"
+            required
+          />
+        </label>
+        <button type="submit" class="btn btn-primary" style="width: 100%" id="btn-register">
+          Create local account
+        </button>
+        <p class="login-divider"><span>or</span></p>
+        <button type="button" class="btn btn-google" id="btn-google-register">Continue with Google</button>
+        <p class="login-hint">We create your profile on first Google sign-in.</p>
+        <p class="login-divider"><span>or Firebase email</span></p>
+        <label>
+          Email
+          <input type="email" id="fb-reg-email" autocomplete="email" placeholder="you@gmail.com" />
+        </label>
+        <label>
+          Password (min 6 characters)
+          <input type="password" id="fb-reg-pass" autocomplete="new-password" minlength="6" />
+        </label>
+        <button type="button" class="btn btn-primary" style="width: 100%" id="btn-firebase-register">
+          Create Firebase account
+        </button>
+        <p class="login-hint" style="margin-top: 0.75rem">
+          Already registered?
+          <button type="button" class="link-like" id="link-to-signin">Back to sign in</button>
+        </p>
+      </form>
+    </div>
+
+    <script src="js/api-base.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      (function () {
+        var h = location.hostname;
+        var proto = location.protocol;
+        var local = h === "localhost" || h === "127.0.0.1";
+        var apiBase = (window.API_BASE_URL || "").trim();
+        if ((proto === "file:" || (h && !local)) && !apiBase) {
+          document.getElementById("login-host-warning").style.display = "block";
+        }
+
+        function showErr(el, msg) {
+          el.textContent = msg || "";
+          el.classList.toggle("visible", !!msg);
+        }
+
+        CloudResearchAuth.validateSession().then(function (ok) {
+          if (ok) window.location.replace("dashboard.html");
+        });
+
+        var tabSign = document.getElementById("tab-signin");
+        var tabReg = document.getElementById("tab-register");
+        var formSign = document.getElementById("form-signin");
+        var formReg = document.getElementById("form-register");
+        var errS = document.getElementById("error-signin");
+        var errR = document.getElementById("error-register");
+
+        function showSignIn() {
+          tabSign.classList.add("active");
+          tabReg.classList.remove("active");
+          tabSign.setAttribute("aria-selected", "true");
+          tabReg.setAttribute("aria-selected", "false");
+          formSign.classList.remove("hidden");
+          formReg.classList.add("hidden");
+          showErr(errS, "");
+          showErr(errR, "");
+        }
+
+        function showRegister() {
+          tabReg.classList.add("active");
+          tabSign.classList.remove("active");
+          tabReg.setAttribute("aria-selected", "true");
+          tabSign.setAttribute("aria-selected", "false");
+          formReg.classList.remove("hidden");
+          formSign.classList.add("hidden");
+          showErr(errS, "");
+          showErr(errR, "");
+        }
+
+        tabSign.addEventListener("click", showSignIn);
+        tabReg.addEventListener("click", showRegister);
+        document.getElementById("link-to-register").addEventListener("click", showRegister);
+        document.getElementById("link-to-signin").addEventListener("click", showSignIn);
+
+        function syncFirebaseSession(idToken) {
+          return fetch(CloudResearchAuth.apiUrl("/api/auth/firebase"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idToken: idToken }),
+          }).then(function (r) {
+            return CloudResearchAuth.parseJsonResponse(r).then(function (data) {
+              if (!r.ok) throw new Error(data.error || "Sign-in failed");
+              return data;
+            });
+          });
+        }
+
+        function firebaseReady() {
+          return typeof firebase !== "undefined" && firebase.apps && firebase.apps.length;
+        }
+
+        function googleContinue(errEl, btn) {
+          showErr(errEl, "");
+          if (!firebaseReady()) {
+            showErr(errEl, "Firebase did not load. Check firebase-config.js and your network.");
+            return;
+          }
+          var prev = btn ? btn.disabled : false;
+          if (btn) btn.disabled = true;
+          var auth = firebase.auth();
+          var provider = new firebase.auth.GoogleAuthProvider();
+          auth
+            .signInWithPopup(provider)
+            .then(function (cred) {
+              return cred.user.getIdToken();
+            })
+            .then(syncFirebaseSession)
+            .then(function (data) {
+              CloudResearchAuth.setSession(data.token, data.user);
+              window.location.href = "dashboard.html";
+            })
+            .catch(function (err) {
+              var msg = err.message || "Google sign-in failed";
+              if (err.code === "auth/popup-closed-by-user") msg = "Sign-in was cancelled.";
+              showErr(errEl, msg);
+            })
+            .finally(function () {
+              if (btn) btn.disabled = prev;
+            });
+        }
+
+        document.getElementById("btn-google-signin").addEventListener("click", function () {
+          googleContinue(errS, document.getElementById("btn-google-signin"));
+        });
+        document.getElementById("btn-google-register").addEventListener("click", function () {
+          googleContinue(errR, document.getElementById("btn-google-register"));
+        });
+
+        document.getElementById("btn-forgot").addEventListener("click", function () {
+          document.getElementById("forgot-panel").classList.toggle("hidden");
+        });
+
+        document.getElementById("forgot-send").addEventListener("click", function () {
+          showErr(errS, "");
+          var email = document.getElementById("forgot-email").value.trim();
+          if (!email) {
+            showErr(errS, "Enter the email for your Firebase account.");
+            return;
+          }
+          if (!firebaseReady()) {
+            showErr(errS, "Firebase did not load.");
+            return;
+          }
+          var btn = document.getElementById("forgot-send");
+          btn.disabled = true;
+          firebase
+            .auth()
+            .sendPasswordResetEmail(email)
+            .then(function () {
+              showErr(errS, "If that email has a Firebase account, a reset link was sent.");
+            })
+            .catch(function (e) {
+              showErr(errS, e.message || "Could not send reset email");
+            })
+            .finally(function () {
+              btn.disabled = false;
+            });
+        });
+
+        document.getElementById("btn-firebase-register").addEventListener("click", function () {
+          showErr(errR, "");
+          var email = document.getElementById("fb-reg-email").value.trim();
+          var pass = document.getElementById("fb-reg-pass").value;
+          if (!email || pass.length < 6) {
+            showErr(errR, "Enter a valid email and password (min 6 characters).");
+            return;
+          }
+          if (!firebaseReady()) {
+            showErr(errR, "Firebase did not load.");
+            return;
+          }
+          var btn = document.getElementById("btn-firebase-register");
+          btn.disabled = true;
+          firebase
+            .auth()
+            .createUserWithEmailAndPassword(email, pass)
+            .then(function (cred) {
+              return cred.user.getIdToken();
+            })
+            .then(syncFirebaseSession)
+            .then(function (data) {
+              CloudResearchAuth.setSession(data.token, data.user);
+              window.location.href = "dashboard.html";
+            })
+            .catch(function (e) {
+              showErr(errR, e.message || "Registration failed");
+            })
+            .finally(function () {
+              btn.disabled = false;
+            });
+        });
+
+        formSign.addEventListener("submit", function (e) {
+          e.preventDefault();
+          showErr(errS, "");
+          var u = document.getElementById("signin-user").value.trim();
+          var p = document.getElementById("signin-pass").value;
+          var btn = document.getElementById("btn-signin");
+          btn.disabled = true;
+          fetch(CloudResearchAuth.apiUrl("/api/auth/login"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: u, password: p }),
+          })
+            .then(function (r) {
+              return CloudResearchAuth.parseJsonResponse(r).then(function (data) {
+                if (!r.ok) throw new Error(data.error || "Sign in failed");
+                return data;
+              });
+            })
+            .then(function (data) {
+              CloudResearchAuth.setSession(data.token, data.user);
+              window.location.href = "dashboard.html";
+            })
+            .catch(function (err) {
+              showErr(errS, err.message);
+            })
+            .finally(function () {
+              btn.disabled = false;
+            });
+        });
+
+        formReg.addEventListener("submit", function (e) {
+          e.preventDefault();
+          showErr(errR, "");
+          var u = document.getElementById("reg-user").value.trim();
+          var p = document.getElementById("reg-pass").value;
+          var btn = document.getElementById("btn-register");
+          btn.disabled = true;
+          fetch(CloudResearchAuth.apiUrl("/api/auth/register"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: u, password: p }),
+          })
+            .then(function (r) {
+              return CloudResearchAuth.parseJsonResponse(r).then(function (data) {
+                if (!r.ok) throw new Error(data.error || "Registration failed");
+                return data;
+              });
+            })
+            .then(function (data) {
+              CloudResearchAuth.setSession(data.token, data.user);
+              window.location.href = "dashboard.html";
+            })
+            .catch(function (err) {
+              showErr(errR, err.message);
+            })
+            .finally(function () {
+              btn.disabled = false;
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>

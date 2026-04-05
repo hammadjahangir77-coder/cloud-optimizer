@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Optimization Strategies — Cloud Optimizer</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/cloud-optimizer.css" />
+    <script src="js/api-base.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      if (!CloudResearchAuth.isLoggedIn()) { window.location.replace("login.html"); }
+    </script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+    <script src="js/lucide-init.js" defer></script>
+  </head>
+  <body class="co-theme">
+    <header class="co-nav">
+      <div class="co-nav-inner">
+        <a href="index.html" class="co-logo"><i data-lucide="cloud"></i> Cloud Optimizer</a>
+        <nav class="co-links" aria-label="Main">
+          <a href="index.html">Home</a>
+          <a href="calculator.html">Cost Calculator</a>
+          <a href="strategies.html" aria-current="page">Optimization Strategies</a>
+          <a href="resources.html">Resources</a>
+        </nav>
+        <div class="co-nav-extra">
+          <a href="dashboard.html" class="co-link-soft">My businesses</a>
+          <span class="co-link-soft" id="user-label"></span>
+          <button type="button" class="co-btn-signin" id="btn-logout">Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="co-main">
+      <h1 class="co-page-title">Optimization strategies</h1>
+      <p class="co-lead">
+        Two big ideas from cloud cost research — explained without jargon. Below them, you'll see a
+        <strong>sample dashboard</strong> (not connected to your real accounts) so you can picture
+        how these ideas look in practice.
+      </p>
+
+      <div class="co-strategy-grid">
+        <article class="co-card">
+          <h2><i data-lucide="percent"></i> Longer commitments = deeper discounts</h2>
+          <p>
+            If part of your usage stays <strong>steady month after month</strong>, major providers
+            let you "pre-buy" capacity for 1–3 years. Microsoft's public materials discuss
+            <strong>up to about 72% lower cost</strong> compared with paying by the hour for some
+            committed options — but only for the right workloads and terms.
+          </p>
+          <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted)">
+            Best for: stable websites, databases, or background jobs — <strong>not</strong> for
+            experiments that might be deleted next week.
+          </p>
+        </article>
+        <article class="co-card">
+          <h2><i data-lucide="moon"></i> Turn off what you don't need overnight</h2>
+          <p>
+            Test and training systems often run <strong>24 hours a day</strong> even when nobody is
+            working. Research summaries point to <strong>large savings in non-production</strong>
+            environments when automatic schedules switch servers off — figures around
+            <strong>up to 65%</strong> appear in academic/industry discussions for those scenarios.
+          </p>
+          <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted)">
+            Best for: development, demos, and sandboxes — usually <strong>not</strong> for your live
+            customer-facing site unless you truly have quiet hours.
+          </p>
+        </article>
+      </div>
+
+      <h2 class="co-page-title" style="margin-top:2.5rem;font-size:1.35rem">
+        Sample optimization dashboard
+      </h2>
+      <p class="co-lead">Illustration only — toggles and bars are for learning, not live data.</p>
+
+      <div class="co-mock-grid">
+        <article class="co-card">
+          <h3><i data-lucide="gauge"></i> Right-sizing power</h3>
+          <p>
+            Imagine you rented a <strong>very large</strong> server "just in case," but daily use only
+            needs a <strong>smaller</strong> one. The bar shows full power vs a tighter fit.
+          </p>
+          <div class="co-capacity-visual">
+            <div class="co-capacity-bar" aria-hidden="true"></div>
+            <div class="co-capacity-legend">
+              <span>Before: paying for 100% capacity</span>
+              <span>After example: ~40% still busy</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="co-card">
+          <h3><i data-lucide="clock"></i> Night-time shutdown</h3>
+          <p>
+            Flip the switch to see how you might <strong>pause non-urgent systems</strong> between
+            <strong>6:00 PM and 8:00 AM</strong> on weekdays.
+          </p>
+          <div class="co-toggle-row">
+            <span id="sched-label">Servers for testing: <strong id="sched-state">OFF overnight</strong></span>
+            <button type="button" class="co-switch on" id="sched-toggle" aria-pressed="true" aria-labelledby="sched-label"></button>
+          </div>
+          <p class="co-schedule-note">
+            When <strong>off</strong>, we pretend those hours are not billed. Real providers bill
+            differently — this is a teaching picture only.
+          </p>
+        </article>
+
+        <article class="co-card">
+          <h3><i data-lucide="bell"></i> Spending alert (preview)</h3>
+          <p>
+            A simple email-style preview: warn the owner when monthly spend crosses
+            <strong>80% of the budget</strong> you set in your cloud console.
+          </p>
+          <div class="co-email-mock">
+            <div class="head"><i data-lucide="mail" style="width:1rem;height:1rem;vertical-align:middle"></i> Budget alert</div>
+            <div class="body">
+              <strong>Subject:</strong> You've used 80% of your April cloud budget<br /><br />
+              Hi — your dashboard shows <strong>80%</strong> of this month's limit is used. Review
+              recent charges or raise the budget if this was planned.
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="co-footer">
+      <a href="calculator.html">Cost calculator</a> ·
+      <a href="resources.html">Resources &amp; checklist</a>
+    </footer>
+
+    <script>
+      (function () {
+        var user = CloudResearchAuth.getUser();
+        var label = document.getElementById("user-label");
+        if (label && user) label.textContent = user.username;
+        document.getElementById("btn-logout").addEventListener("click", function () {
+          CloudResearchAuth.logout();
+          window.location.href = "login.html";
+        });
+
+        var btn = document.getElementById("sched-toggle");
+        var state = document.getElementById("sched-state");
+        btn.addEventListener("click", function () {
+          var on = btn.classList.toggle("on");
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+          state.textContent = on ? "OFF overnight" : "ON 24 hours (costs more)";
+        });
+      })();
+    </script>
+  </body>
+</html>
