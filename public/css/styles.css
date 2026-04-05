@@ -935,3 +935,35 @@ a.card {
   line-height: 1.65;
 }
 
+/* Hero section layout adjustment */
+.co-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Middle main button container */
+.co-main-cta {
+    margin-bottom: 25px; /* Niche wale buttons se fasla */
+}
+
+/* Main button size (optional: thora bara dikhane ke liye) */
+.co-main-cta .co-btn-primary {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+}
+
+/* Secondary buttons row (underneath) */
+.co-secondary-cta {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap; /* Mobile par buttons niche aa jayenge */
+}
+
+/* Sub buttons ka style (optional: thora chota) */
+.co-secondary-cta .co-btn-outline {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+}
