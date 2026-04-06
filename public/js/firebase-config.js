@@ -1,4 +1,4 @@
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyD4wjxPLTrpIeU3gPkn1C26mOGwvHTmqJw",
   authDomain: "cloud-optimizer-4848a.firebaseapp.com",
@@ -8,3 +8,9 @@ const firebaseConfig = {
   appId: "1:881140288742:web:30ef481d69db8a7469ff27",
   measurementId: "G-STXXS1JEJD"
 };
+
+// Initialize Firebase (using Compat version for easier integration)
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    console.log("Firebase initialized successfully!");
+}
