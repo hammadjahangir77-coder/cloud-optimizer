@@ -11,11 +11,18 @@ function getFirebaseAdmin() {
       _admin = adminSdk;
       return _admin;
     }
-    const jsonPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH
+    const explicitPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH
       ? path.resolve(process.env.FIREBASE_SERVICE_ACCOUNT_PATH)
-      : path.join(__dirname, "firebase-service-account.json");
-    if (fs.existsSync(jsonPath)) {
-      const sa = require(jsonPath);
+      : null;
+    const candidatePaths = explicitPath
+      ? [explicitPath]
+      : [
+          path.join(__dirname, "firebase-service-account.json"),
+          path.join(__dirname, "firebase-service-account.json.json"),
+        ];
+    const jsonPath = candidatePaths.find((p) => fs.existsSync(p));
+    if (jsonPath) {
+      const sa = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
       adminSdk.initializeApp({ credential: adminSdk.credential.cert(sa) });
       _admin = adminSdk;
       return _admin;
