@@ -13,6 +13,463 @@
     </script>
     <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
     <script src="js/lucide-init.js" defer></script>
+    <style>
+      .db-header {
+        max-width: 960px;
+        margin: 2.5rem auto 0;
+        padding: 0 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .db-header-left h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 0 0.3rem;
+      }
+      .db-header-left p {
+        font-size: 0.875rem;
+        color: rgba(255,255,255,0.45);
+        margin: 0;
+      }
+      .db-header-left p strong { color: rgba(255,255,255,0.7); }
+
+      .db-add-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 0.55rem 1.1rem;
+        border-radius: 9px;
+        background: #4fa8f7;
+        color: #0a0f1e;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: background 0.15s;
+      }
+      .db-add-btn:hover { background: #6db8f8; }
+
+      .db-body {
+        max-width: 960px;
+        margin: 1.75rem auto 0;
+        padding: 0 1.5rem 4rem;
+      }
+
+      /* Quick-stats bar */
+      .db-stats {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.75rem;
+      }
+      .db-stat-card {
+        flex: 1;
+        min-width: 140px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+      }
+      .db-stat-card .stat-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: rgba(255,255,255,0.3);
+        margin-bottom: 0.4rem;
+      }
+      .db-stat-card .stat-value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1;
+      }
+      .db-stat-card .stat-sub {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.3);
+        margin-top: 3px;
+      }
+
+      /* Business cards grid */
+      .db-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+
+      .db-biz-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px;
+        padding: 1.25rem 1.25rem 1rem;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        transition: border-color 0.15s, background 0.15s;
+        cursor: pointer;
+      }
+      .db-biz-card:hover {
+        border-color: rgba(79,168,247,0.35);
+        background: rgba(79,168,247,0.05);
+      }
+
+      .db-biz-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+      }
+      .db-biz-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(79,168,247,0.15);
+        color: #4fa8f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        text-transform: uppercase;
+      }
+      .db-biz-arrow {
+        color: rgba(255,255,255,0.2);
+        margin-top: 2px;
+        flex-shrink: 0;
+        transition: color 0.15s;
+      }
+      .db-biz-card:hover .db-biz-arrow { color: #4fa8f7; }
+
+      .db-biz-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0;
+        flex: 1;
+        line-height: 1.3;
+        padding-top: 2px;
+      }
+
+      .db-biz-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .db-biz-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.4);
+      }
+      .db-biz-row svg { flex-shrink: 0; }
+
+      .db-biz-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+      .db-biz-badge {
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: 99px;
+        background: rgba(29,158,117,0.12);
+        color: #1d9e75;
+        border: 1px solid rgba(29,158,117,0.2);
+      }
+      .db-biz-open {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #4fa8f7;
+      }
+
+      /* Add new card */
+      .db-add-card {
+        background: transparent;
+        border: 1.5px dashed rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        min-height: 160px;
+        transition: border-color 0.15s, background 0.15s;
+      }
+      .db-add-card:hover {
+        border-color: rgba(79,168,247,0.4);
+        background: rgba(79,168,247,0.04);
+      }
+      .db-add-card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255,255,255,0.3);
+      }
+      .db-add-card span {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.35);
+      }
+
+      /* Empty state */
+      .db-empty {
+        text-align: center;
+        padding: 4rem 1rem;
+        display: none;
+      }
+      .db-empty.visible { display: block; }
+      .db-empty-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        background: rgba(79,168,247,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4fa8f7;
+        margin: 0 auto 1rem;
+      }
+      .db-empty h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 0.4rem;
+      }
+      .db-empty p {
+        font-size: 0.875rem;
+        color: rgba(255,255,255,0.4);
+        margin: 0 0 1.25rem;
+      }
+
+      /* Load error */
+      .db-error {
+        background: rgba(226,75,74,0.08);
+        border: 1px solid rgba(226,75,74,0.2);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        color: #e24b4a;
+        margin-bottom: 1rem;
+        display: none;
+      }
+      .db-error.visible { display: block; }
+
+      /* ---- Modal ---- */
+      .db-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.65);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 1rem;
+      }
+      .db-modal-backdrop.open { display: flex; }
+
+      .db-modal {
+        background: #111827;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 520px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 1.75rem;
+      }
+      .db-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.35rem;
+      }
+      .db-modal-header h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+      }
+      .db-modal-close {
+        background: none;
+        border: none;
+        color: rgba(255,255,255,0.35);
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        transition: color 0.15s;
+      }
+      .db-modal-close:hover { color: rgba(255,255,255,0.7); }
+      .db-modal-sub {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.4);
+        margin: 0 0 1.5rem;
+      }
+
+      .db-modal-err {
+        background: rgba(226,75,74,0.08);
+        border: 1px solid rgba(226,75,74,0.2);
+        border-radius: 8px;
+        padding: 0.6rem 0.85rem;
+        font-size: 0.85rem;
+        color: #e24b4a;
+        margin-bottom: 1rem;
+        display: none;
+      }
+      .db-modal-err.visible { display: block; }
+
+      .db-form-group {
+        margin-bottom: 1.1rem;
+      }
+      .db-form-group label,
+      .db-form-group legend {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.55);
+        margin-bottom: 0.4rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .db-form-group input[type="text"],
+      .db-form-group input[type="number"] {
+        width: 100%;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 0.6rem 0.85rem;
+        font-size: 0.9rem;
+        color: #fff;
+        outline: none;
+        box-sizing: border-box;
+        transition: border-color 0.15s;
+      }
+      .db-form-group input[type="text"]:focus,
+      .db-form-group input[type="number"]:focus {
+        border-color: rgba(79,168,247,0.5);
+      }
+      .db-form-group input::placeholder { color: rgba(255,255,255,0.2); }
+      .db-form-hint {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.3);
+        margin-top: 0.3rem;
+        font-weight: 400;
+        text-transform: none;
+        letter-spacing: 0;
+      }
+
+      .db-radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .db-radio-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.65rem 0.85rem;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+      }
+      .db-radio-option:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.14); }
+      .db-radio-option input { margin-top: 2px; accent-color: #4fa8f7; flex-shrink: 0; }
+      .db-radio-option span { font-size: 0.875rem; color: rgba(255,255,255,0.65); line-height: 1.4; }
+
+      .db-toggle-pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+      .db-toggle-opt {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.55rem;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        color: rgba(255,255,255,0.5);
+        transition: all 0.15s;
+      }
+      .db-toggle-opt:hover { background: rgba(255,255,255,0.04); }
+      .db-toggle-opt input { accent-color: #4fa8f7; }
+
+      .db-check-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .db-check-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.55rem 0.85rem;
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+      }
+      .db-check-option:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.13); }
+      .db-check-option input { margin-top: 2px; accent-color: #4fa8f7; flex-shrink: 0; }
+      .db-check-option span { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.4; }
+
+      .db-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(255,255,255,0.07);
+      }
+      .db-btn-ghost {
+        background: none;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 0.55rem 1.1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.5);
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .db-btn-ghost:hover { background: rgba(255,255,255,0.05); }
+      .db-btn-save {
+        background: #4fa8f7;
+        border: none;
+        border-radius: 8px;
+        padding: 0.55rem 1.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #0a0f1e;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .db-btn-save:hover { background: #6db8f8; }
+      .db-btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
   </head>
   <body class="co-theme">
     <header class="co-nav">
@@ -32,76 +489,131 @@
     </header>
 
     <main class="co-main">
-      <div class="dashboard-toolbar">
-        <div>
-          <h2 style="margin:0;font-size:1.5rem;font-weight:800;color:var(--text)">Your businesses</h2>
-          <p style="margin:0.35rem 0 0;color:var(--text-muted);font-size:0.95rem">
-            Add each business once. We store a simple profile so you can open the <strong>cloud advisor</strong> on the next screen.
-          </p>
+      <!-- Header -->
+      <div class="db-header">
+        <div class="db-header-left">
+          <h1>Your businesses</h1>
+          <p>Add each business once — we store a simple profile so you can open the <strong>cloud advisor</strong> for each one.</p>
         </div>
-        <button type="button" class="btn btn-primary" id="btn-new-business">+ Add business</button>
+        <button type="button" class="db-add-btn" id="btn-new-business">
+          <i data-lucide="plus" style="width:16px;height:16px;"></i> Add business
+        </button>
       </div>
 
-      <div class="login-error visible" id="load-error" style="display:none"></div>
+      <div class="db-body">
+        <!-- Stats bar -->
+        <div class="db-stats" id="stats-bar" style="display:none;">
+          <div class="db-stat-card">
+            <div class="stat-label">Businesses</div>
+            <div class="stat-value" id="stat-count">0</div>
+            <div class="stat-sub">in your account</div>
+          </div>
+          <div class="db-stat-card">
+            <div class="stat-label">Total monthly spend</div>
+            <div class="stat-value" id="stat-spend">—</div>
+            <div class="stat-sub">across all profiles</div>
+          </div>
+          <div class="db-stat-card">
+            <div class="stat-label">Potential savings (32%)</div>
+            <div class="stat-value" id="stat-savings" style="color:#1d9e75;">—</div>
+            <div class="stat-sub">industry average estimate</div>
+          </div>
+        </div>
 
-      <div id="empty" class="empty-state hidden">
-        <p>No businesses yet — add your first profile.</p>
-        <button type="button" class="btn btn-primary" id="btn-empty-create">Add business</button>
+        <!-- Error -->
+        <div class="db-error" id="load-error"></div>
+
+        <!-- Empty state -->
+        <div class="db-empty" id="empty-state">
+          <div class="db-empty-icon">
+            <i data-lucide="building-2" style="width:26px;height:26px;"></i>
+          </div>
+          <h2>No businesses yet</h2>
+          <p>Add your first profile to start the cloud advisor and get personalized savings recommendations.</p>
+          <button type="button" class="db-add-btn" id="btn-empty-create">
+            <i data-lucide="plus" style="width:16px;height:16px;"></i> Add your first business
+          </button>
+        </div>
+
+        <!-- Cards grid -->
+        <div class="db-grid" id="business-list"></div>
       </div>
-
-      <div class="cards-grid" id="business-list"></div>
     </main>
 
-    <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div class="modal-panel" style="max-width:520px">
-        <h3 id="modal-title">Business profile</h3>
-        <p style="margin:0 0 1rem;color:var(--text-muted);font-size:0.9rem">
-          Plain labels for owners who are not IT specialists. You can edit more later inside each business.
-        </p>
-        <div class="login-error" id="modal-error"></div>
+    <!-- Modal -->
+    <div class="db-modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="db-modal">
+        <div class="db-modal-header">
+          <h3 id="modal-title">New business profile</h3>
+          <button type="button" class="db-modal-close" id="modal-close-x" aria-label="Close">
+            <i data-lucide="x" style="width:18px;height:18px;"></i>
+          </button>
+        </div>
+        <p class="db-modal-sub">Plain labels — no IT jargon required.</p>
+        <div class="db-modal-err" id="modal-error"></div>
 
-        <div class="form-grid">
-          <label class="form-full">
-            Business name *
-            <input type="text" id="f-name" required maxlength="200" placeholder="e.g. Hammad Retail" />
-          </label>
-
-          <label class="form-full">
-            Rough monthly cloud spend
-            <span class="form-label-hint">Use £, $, PKR, or any currency — same number.</span>
-            <input type="number" id="f-budget" min="0" step="1" placeholder="e.g. 1500" />
-          </label>
-
-          <fieldset class="form-full co-fieldset">
-            <legend>How do you mainly use the cloud?</legend>
-            <div class="co-radio-stack">
-              <label><input type="radio" name="f-svc" value="saas" checked /> <span>Ready-made apps (email in the browser, Microsoft 365–style tools)</span></label>
-              <label><input type="radio" name="f-svc" value="paas" /> <span>Online tools to build or host our own software</span></label>
-              <label><input type="radio" name="f-svc" value="iaas" /> <span>Renting servers, storage, or raw compute we manage ourselves</span></label>
-            </div>
-          </fieldset>
-
-          <fieldset class="form-full co-fieldset co-fieldset-inline">
-            <legend>Dedicated IT manager?</legend>
-            <div class="co-toggle-line co-toggle-line--even">
-              <label class="co-toggle-option"><input type="radio" name="f-it" id="f-it-yes" value="yes" /> <span>Yes</span></label>
-              <label class="co-toggle-option"><input type="radio" name="f-it" id="f-it-no" value="no" checked /> <span>No</span></label>
-            </div>
-          </fieldset>
-
-          <fieldset class="form-full co-fieldset">
-            <legend>What worries you most? (pick any)</legend>
-            <div class="co-check-stack">
-              <label><input type="checkbox" name="f-issue" value="unexpected_bills" /> <span>Surprise bills or sudden jumps in cost</span></label>
-              <label><input type="checkbox" name="f-issue" value="complex_reporting" /> <span>Hard-to-read invoices or usage reports</span></label>
-              <label><input type="checkbox" name="f-issue" value="over_provisioned" /> <span>Paying for more power or storage than we really use</span></label>
-            </div>
-          </fieldset>
+        <div class="db-form-group">
+          <label for="f-name">Business name *</label>
+          <input type="text" id="f-name" required maxlength="200" placeholder="e.g. Hammad Retail" />
         </div>
 
-        <div class="modal-actions">
-          <button type="button" class="btn btn-ghost" id="modal-cancel">Cancel</button>
-          <button type="button" class="btn btn-primary" id="modal-save">Save business</button>
+        <div class="db-form-group">
+          <label for="f-budget">Rough monthly cloud spend</label>
+          <input type="number" id="f-budget" min="0" step="1" placeholder="e.g. 1500" />
+          <div class="db-form-hint">Use £, $, PKR, or any currency — same number.</div>
+        </div>
+
+        <div class="db-form-group">
+          <legend>How do you mainly use the cloud?</legend>
+          <div class="db-radio-group">
+            <label class="db-radio-option">
+              <input type="radio" name="f-svc" value="saas" checked />
+              <span>Ready-made apps (email, Microsoft 365-style tools)</span>
+            </label>
+            <label class="db-radio-option">
+              <input type="radio" name="f-svc" value="paas" />
+              <span>Online tools to build or host our own software</span>
+            </label>
+            <label class="db-radio-option">
+              <input type="radio" name="f-svc" value="iaas" />
+              <span>Renting servers, storage, or raw compute we manage ourselves</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="db-form-group">
+          <legend>Dedicated IT manager?</legend>
+          <div class="db-toggle-pair">
+            <label class="db-toggle-opt">
+              <input type="radio" name="f-it" id="f-it-yes" value="yes" /> Yes
+            </label>
+            <label class="db-toggle-opt">
+              <input type="radio" name="f-it" id="f-it-no" value="no" checked /> No
+            </label>
+          </div>
+        </div>
+
+        <div class="db-form-group">
+          <legend>What worries you most? (pick any)</legend>
+          <div class="db-check-group">
+            <label class="db-check-option">
+              <input type="checkbox" name="f-issue" value="unexpected_bills" />
+              <span>Surprise bills or sudden jumps in cost</span>
+            </label>
+            <label class="db-check-option">
+              <input type="checkbox" name="f-issue" value="complex_reporting" />
+              <span>Hard-to-read invoices or usage reports</span>
+            </label>
+            <label class="db-check-option">
+              <input type="checkbox" name="f-issue" value="over_provisioned" />
+              <span>Paying for more power or storage than we really use</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="db-modal-actions">
+          <button type="button" class="db-btn-ghost" id="modal-cancel">Cancel</button>
+          <button type="button" class="db-btn-save" id="modal-save">Save business</button>
         </div>
       </div>
     </div>
@@ -126,7 +638,8 @@
         });
 
         var listEl = document.getElementById("business-list");
-        var emptyEl = document.getElementById("empty");
+        var emptyEl = document.getElementById("empty-state");
+        var statsBar = document.getElementById("stats-bar");
         var loadErr = document.getElementById("load-error");
         var modal = document.getElementById("modal");
         var modalErr = document.getElementById("modal-error");
@@ -144,7 +657,7 @@
           document.getElementById("f-budget").value = "";
           document.getElementById("f-it-no").checked = true;
           modal.querySelectorAll('input[name="f-issue"]').forEach(function (cb) { cb.checked = false; });
-          document.getElementById("f-name").focus();
+          setTimeout(function () { document.getElementById("f-name").focus(); }, 50);
           if (window.lucide) lucide.createIcons();
         }
 
@@ -156,6 +669,7 @@
         document.getElementById("btn-new-business").addEventListener("click", openModal);
         document.getElementById("btn-empty-create").addEventListener("click", openModal);
         document.getElementById("modal-cancel").addEventListener("click", closeModal);
+        document.getElementById("modal-close-x").addEventListener("click", closeModal);
         modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
 
         function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; }
@@ -167,7 +681,13 @@
           var name = val("f-name");
           if (!name) { showModalErr("Please enter a business name."); return; }
           showModalErr("");
-          var body = { name: name, service_level: selectedService(), monthly_cloud_budget: num("f-budget"), has_it_manager: document.getElementById("f-it-yes").checked, primary_issues: selectedIssues() };
+          var body = {
+            name: name,
+            service_level: selectedService(),
+            monthly_cloud_budget: num("f-budget"),
+            has_it_manager: document.getElementById("f-it-yes").checked,
+            primary_issues: selectedIssues()
+          };
           var btn = document.getElementById("modal-save");
           btn.disabled = true;
           CloudResearchAuth.apiFetch("/api/businesses", { method: "POST", body: JSON.stringify(body) })
@@ -183,24 +703,87 @@
           return "Ready-made apps";
         }
 
-        function cardHtml(b) {
-          var sub = serviceLabel(b.service_level);
-          if (b.monthly_cloud_budget != null) sub += " · ~" + escapeHtml(String(Math.round(b.monthly_cloud_budget))) + "/mo";
-          return '<a class="card" href="business.html?id=' + encodeURIComponent(b.id) + '"><h3>' + escapeHtml(b.name) + "</h3><p>" + escapeHtml(sub) + "</p></a>";
+        function serviceIcon(sl) {
+          if (sl === "paas") return "code-2";
+          if (sl === "iaas") return "server";
+          return "layout-grid";
         }
 
-        function escapeHtml(s) { if (!s) return ""; var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+        function escapeHtml(s) {
+          if (!s) return "";
+          var d = document.createElement("div");
+          d.textContent = s;
+          return d.innerHTML;
+        }
+
+        function initials(name) {
+          return name.trim().split(/\s+/).slice(0, 2).map(function (w) { return w[0]; }).join("").toUpperCase();
+        }
+
+        function cardHtml(b) {
+          var svcLabel = serviceLabel(b.service_level);
+          var svcIcon = serviceIcon(b.service_level);
+          var budget = b.monthly_cloud_budget != null ? "~" + Math.round(b.monthly_cloud_budget).toLocaleString() + " / mo" : "Budget not set";
+          var init = initials(b.name);
+          return [
+            '<a class="db-biz-card" href="business.html?id=' + encodeURIComponent(b.id) + '">',
+              '<div class="db-biz-top">',
+                '<div class="db-biz-avatar">' + escapeHtml(init) + '</div>',
+                '<div class="db-biz-name">' + escapeHtml(b.name) + '</div>',
+                '<div class="db-biz-arrow"><i data-lucide="arrow-right" style="width:16px;height:16px;"></i></div>',
+              '</div>',
+              '<div class="db-biz-meta">',
+                '<div class="db-biz-row"><i data-lucide="' + svcIcon + '" style="width:13px;height:13px;"></i>' + escapeHtml(svcLabel) + '</div>',
+                '<div class="db-biz-row"><i data-lucide="wallet" style="width:13px;height:13px;"></i>' + escapeHtml(budget) + '</div>',
+              '</div>',
+              '<div class="db-biz-footer">',
+                '<span class="db-biz-badge">Active</span>',
+                '<span class="db-biz-open">Open advisor →</span>',
+              '</div>',
+            '</a>'
+          ].join("");
+        }
+
+        function addCardHtml() {
+          return [
+            '<button type="button" class="db-add-card" id="btn-grid-add">',
+              '<div class="db-add-card-icon"><i data-lucide="plus" style="width:20px;height:20px;"></i></div>',
+              '<span>Add business</span>',
+            '</button>'
+          ].join("");
+        }
 
         function loadList() {
-          loadErr.style.display = "none";
+          loadErr.classList.remove("visible");
           CloudResearchAuth.apiFetch("/api/businesses")
             .then(function (r) { return r.json().then(function (data) { if (!r.ok) throw new Error(data.error || "Failed to load"); return data; }); })
             .then(function (rows) {
-              if (!rows.length) { listEl.innerHTML = ""; emptyEl.classList.remove("hidden"); return; }
-              emptyEl.classList.add("hidden");
-              listEl.innerHTML = rows.map(cardHtml).join("");
+              if (!rows.length) {
+                listEl.innerHTML = "";
+                emptyEl.classList.add("visible");
+                statsBar.style.display = "none";
+                return;
+              }
+              emptyEl.classList.remove("visible");
+              statsBar.style.display = "flex";
+
+              // Update stats
+              document.getElementById("stat-count").textContent = rows.length;
+              var totalSpend = rows.reduce(function (s, b) { return s + (b.monthly_cloud_budget || 0); }, 0);
+              var hasSpend = rows.some(function (b) { return b.monthly_cloud_budget != null; });
+              document.getElementById("stat-spend").textContent = hasSpend ? totalSpend.toLocaleString() : "—";
+              document.getElementById("stat-savings").textContent = hasSpend ? Math.round(totalSpend * 0.32).toLocaleString() : "—";
+
+              listEl.innerHTML = rows.map(cardHtml).join("") + addCardHtml();
+              if (window.lucide) lucide.createIcons();
+
+              var gridAdd = document.getElementById("btn-grid-add");
+              if (gridAdd) gridAdd.addEventListener("click", openModal);
             })
-            .catch(function (e) { loadErr.textContent = e.message; loadErr.style.display = "block"; });
+            .catch(function (e) {
+              loadErr.textContent = e.message;
+              loadErr.classList.add("visible");
+            });
         }
 
         loadList();
