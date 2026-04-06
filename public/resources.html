@@ -13,6 +13,292 @@
     </script>
     <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
     <script src="js/lucide-init.js" defer></script>
+    <style>
+      .co-res-hero {
+        text-align: center;
+        padding: 3rem 1rem 0;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .co-section-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #4fa8f7;
+        display: block;
+        margin-bottom: 0.6rem;
+      }
+      .co-res-hero h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 0 0.75rem;
+        line-height: 1.2;
+      }
+      .co-res-hero p {
+        font-size: 0.95rem;
+        color: rgba(255,255,255,0.5);
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      .co-res-body {
+        max-width: 860px;
+        margin: 2.5rem auto 0;
+        padding: 0 1rem 4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+
+      .co-res-section-heading {
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.25);
+        margin: 0.5rem 0 0.5rem;
+      }
+
+      /* Resource cards */
+      .co-res-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px;
+        padding: 1.5rem;
+      }
+      .co-res-card-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .co-res-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(79,168,247,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4fa8f7;
+        flex-shrink: 0;
+      }
+      .co-res-card-header h2 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 0.25rem;
+      }
+      .co-res-card-header p {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.45);
+        margin: 0;
+        line-height: 1.5;
+      }
+      .co-res-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+      .co-res-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.06);
+        color: #fff;
+        text-decoration: none;
+        transition: background 0.15s;
+      }
+      .co-res-btn:hover { background: rgba(255,255,255,0.1); }
+      .co-res-btn.primary {
+        background: #4fa8f7;
+        border-color: #4fa8f7;
+        color: #0a0f1e;
+      }
+      .co-res-btn.primary:hover { background: #6db8f8; border-color: #6db8f8; }
+
+      /* Checklist inline */
+      .co-checklist-inline {
+        display: none;
+        margin-top: 1.25rem;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        padding-top: 1.25rem;
+      }
+      .co-checklist-inline.open { display: block; }
+      .co-checklist-inline ol {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .co-checklist-inline ol li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.7);
+        line-height: 1.5;
+      }
+      .co-checklist-inline ol li .num {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(79,168,247,0.15);
+        color: #4fa8f7;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .co-checklist-inline ol li strong { color: #fff; }
+
+      /* Pricing table */
+      .co-table-wrap { overflow-x: auto; margin-top: 1rem; }
+      .co-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+      }
+      .co-table th {
+        text-align: left;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: rgba(255,255,255,0.35);
+        padding: 0 1rem 0.6rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        white-space: nowrap;
+      }
+      .co-table td {
+        padding: 0.75rem 1rem 0.75rem 0;
+        color: rgba(255,255,255,0.65);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        vertical-align: top;
+        line-height: 1.5;
+      }
+      .co-table tbody tr:last-child td { border-bottom: none; }
+      .co-table td strong { color: #fff; }
+      .co-table .cost-cell { color: #4fa8f7; font-weight: 600; font-size: 1rem; white-space: nowrap; }
+      .co-table .badge {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 99px;
+        background: rgba(29,158,117,0.15);
+        color: #1d9e75;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
+
+      /* External links grid */
+      .co-links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+      .co-ext-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.85rem 1rem;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 10px;
+        text-decoration: none;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .co-ext-link:hover {
+        background: rgba(255,255,255,0.06);
+        border-color: rgba(255,255,255,0.13);
+      }
+      .co-ext-link-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.07);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255,255,255,0.5);
+        flex-shrink: 0;
+      }
+      .co-ext-link-text { flex: 1; min-width: 0; }
+      .co-ext-link-text strong {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .co-ext-link-text span {
+        display: block;
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.35);
+        margin-top: 1px;
+      }
+      .co-ext-link-arrow { color: rgba(255,255,255,0.2); flex-shrink: 0; }
+
+      /* Glossary */
+      .co-glossary {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-top: 1rem;
+      }
+      .co-gloss-item {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        font-size: 0.875rem;
+      }
+      .co-gloss-item:last-child { border-bottom: none; }
+      .co-gloss-term { font-weight: 600; color: #fff; }
+      .co-gloss-def { color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+      /* Research strip */
+      .co-research-strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        background: rgba(79,168,247,0.06);
+        border: 1px solid rgba(79,168,247,0.18);
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+      }
+      .co-research-strip p { font-size: 0.9rem; color: rgba(255,255,255,0.55); margin: 0; }
+      .co-research-strip p strong { color: #fff; }
+      .co-research-strip a {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #4fa8f7;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .co-research-strip a:hover { text-decoration: underline; }
+    </style>
   </head>
   <body class="co-theme">
     <header class="co-nav">
@@ -33,98 +319,187 @@
     </header>
 
     <main class="co-main">
-      <h1 class="co-page-title">Resources</h1>
-      <p class="co-lead">
-        Download a quick checklist, compare pricing styles, or open the longer
-        <strong>research appendix</strong> if you need the academic version of this topic.
-      </p>
-
-      <div class="co-card" style="margin-bottom:1.5rem">
-        <h2 style="margin-top:0;display:flex;align-items:center;gap:0.5rem">
-          <i data-lucide="clipboard-list"></i> 5-minute cloud audit
-        </h2>
-        <p style="color:var(--text-muted);margin-bottom:1rem">
-          Five simple checks many small businesses skip — based on common themes in cloud cost
-          research (budgets, unused storage, idle capacity, and schedules).
-        </p>
-        <div class="co-cta-row" style="justify-content:flex-start">
-          <button type="button" class="co-btn-primary co-no-print" id="btn-open-checklist">
-            <i data-lucide="download"></i> Open checklist
-          </button>
-          <button type="button" class="co-btn-outline co-no-print" id="btn-print-checklist">
-            <i data-lucide="printer"></i> Save as PDF (uses Print)
-          </button>
-        </div>
+      <div class="co-res-hero">
+        <span class="co-section-label">Practical tools &amp; references</span>
+        <h1>Resources for cloud cost control</h1>
+        <p>Checklists, pricing comparisons, external references, and plain-language definitions — everything a small business needs to get started.</p>
       </div>
 
-      <div class="co-card">
-        <h2 style="margin-top:0;display:flex;align-items:center;gap:0.5rem">
-          <i data-lucide="table"></i> Pay-as-you-go vs longer commitment (example)
-        </h2>
-        <p style="color:var(--text-muted)">
-          Illustrative numbers for a <strong>small application server</strong> — not a live quote.
-          Real prices change by region, currency, and contract.
-        </p>
-        <div class="co-table-wrap">
-          <table class="co-table">
-            <thead>
-              <tr>
-                <th>Pricing style</th>
-                <th>What it means</th>
-                <th>Example monthly cost</th>
-                <th>Good for…</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>On-demand</strong> (pay as you go)</td>
-                <td>Pay for each hour or second you use. Stop anytime.</td>
-                <td>~<strong>240</strong> (example units)</td>
-                <td>Tests, short projects, unpredictable traffic</td>
-              </tr>
-              <tr>
-                <td><strong>Reserved / 1-year plan</strong></td>
-                <td>Promise to keep a baseline size for a year; provider lowers the rate.</td>
-                <td>~<strong>140</strong> (example units)</td>
-                <td>Steady websites or databases you know will run all year</td>
-              </tr>
-              <tr>
-                <td><strong>3-year commitment</strong> (deepest discount)</td>
-                <td>Longer promise — often the largest % off in vendor materials.</td>
-                <td>~<strong>95</strong> (example units)</td>
-                <td>Mature systems with predictable load (vendor docs cite up to ~72% vs on-demand)</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="co-res-body">
+
+        <!-- 1. Audit checklist -->
+        <p class="co-res-section-heading">Quick tools</p>
+
+        <div class="co-res-card">
+          <div class="co-res-card-header">
+            <div class="co-res-icon"><i data-lucide="clipboard-list" style="width:20px;height:20px;"></i></div>
+            <div>
+              <h2>5-minute cloud audit</h2>
+              <p>Five checks many small businesses skip — based on common themes in cloud cost research: budgets, unused storage, idle capacity, and schedules.</p>
+            </div>
+          </div>
+          <div class="co-res-actions co-no-print">
+            <button type="button" class="co-res-btn primary" id="btn-toggle-checklist">
+              <i data-lucide="chevron-down" style="width:15px;height:15px;" id="toggle-icon"></i> Show checklist
+            </button>
+            <button type="button" class="co-res-btn" id="btn-print-checklist">
+              <i data-lucide="printer" style="width:15px;height:15px;"></i> Save as PDF
+            </button>
+          </div>
+          <div class="co-checklist-inline" id="checklist-inline">
+            <ol>
+              <li><span class="num">1</span><span><strong>Set budget alerts</strong> — get an email before the bill surprises you. Most providers offer this free in their billing dashboard.</span></li>
+              <li><span class="num">2</span><span><strong>Delete unused backups</strong> — old snapshots accumulate silently. Review what you're storing and remove anything you no longer need.</span></li>
+              <li><span class="num">3</span><span><strong>Find idle systems</strong> — servers running 24/7 with almost no traffic are pure waste. Check CPU and network utilisation graphs.</span></li>
+              <li><span class="num">4</span><span><strong>Check orphan storage</strong> — disks not attached to any active instance still cost money. Detach and delete if safe to do so.</span></li>
+              <li><span class="num">5</span><span><strong>Schedule off-hour shutdowns</strong> — test and training environments don't need to run nights and weekends. Auto-stop them.</span></li>
+            </ol>
+          </div>
         </div>
+
+        <!-- 2. Pricing comparison -->
+        <div class="co-res-card">
+          <div class="co-res-card-header">
+            <div class="co-res-icon"><i data-lucide="bar-chart-2" style="width:20px;height:20px;"></i></div>
+            <div>
+              <h2>Pay-as-you-go vs commitment pricing</h2>
+              <p>Illustrative numbers for a small application server — not a live quote. Real prices vary by region, currency, and contract.</p>
+            </div>
+          </div>
+          <div class="co-table-wrap">
+            <table class="co-table">
+              <thead>
+                <tr>
+                  <th>Pricing style</th>
+                  <th>What it means</th>
+                  <th>Example / month</th>
+                  <th>Best for</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>On-demand</strong></td>
+                  <td>Pay per hour or second, stop anytime. No commitment.</td>
+                  <td class="cost-cell">~240</td>
+                  <td>Tests, short projects, unpredictable traffic</td>
+                </tr>
+                <tr>
+                  <td><strong>Reserved / 1-year</strong></td>
+                  <td>Commit to a baseline for a year — provider reduces the rate.</td>
+                  <td class="cost-cell">~140 <span class="badge">−42%</span></td>
+                  <td>Steady websites or databases running all year</td>
+                </tr>
+                <tr>
+                  <td><strong>3-year commitment</strong></td>
+                  <td>Longest promise, deepest discount. Vendor docs cite up to ~72% off.</td>
+                  <td class="cost-cell">~95 <span class="badge">−60%</span></td>
+                  <td>Mature systems with predictable, stable load</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3. Glossary -->
+        <div class="co-res-card">
+          <div class="co-res-card-header">
+            <div class="co-res-icon"><i data-lucide="book-open" style="width:20px;height:20px;"></i></div>
+            <div>
+              <h2>Cloud billing glossary</h2>
+              <p>Plain-language definitions for terms you'll see on your cloud invoice.</p>
+            </div>
+          </div>
+          <div class="co-glossary">
+            <div class="co-gloss-item">
+              <span class="co-gloss-term">On-demand instance</span>
+              <span class="co-gloss-def">A virtual server you pay for by the hour or second with no upfront commitment.</span>
+            </div>
+            <div class="co-gloss-item">
+              <span class="co-gloss-term">Reserved instance</span>
+              <span class="co-gloss-def">A discounted rate in exchange for committing to a server size for 1 or 3 years.</span>
+            </div>
+            <div class="co-gloss-item">
+              <span class="co-gloss-term">Spot / preemptible</span>
+              <span class="co-gloss-def">Spare cloud capacity sold cheaply — can be reclaimed by the provider with short notice.</span>
+            </div>
+            <div class="co-gloss-item">
+              <span class="co-gloss-term">Snapshot</span>
+              <span class="co-gloss-def">A point-in-time backup of a disk. Old snapshots are a common source of silent spend.</span>
+            </div>
+            <div class="co-gloss-item">
+              <span class="co-gloss-term">Egress</span>
+              <span class="co-gloss-def">Data leaving the cloud (e.g. to users or another provider). Usually charged per GB.</span>
+            </div>
+            <div class="co-gloss-item">
+              <span class="co-gloss-term">Right-sizing</span>
+              <span class="co-gloss-def">Matching your server size to actual usage — switching from oversized to a smaller tier.</span>
+            </div>
+            <div class="co-gloss-item">
+              <span class="co-gloss-term">Idle resource</span>
+              <span class="co-gloss-def">Infrastructure running but doing almost no work — a key source of the 32% waste figure.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. External links -->
+        <p class="co-res-section-heading">External references</p>
+
+        <div class="co-res-card">
+          <div class="co-res-card-header">
+            <div class="co-res-icon"><i data-lucide="external-link" style="width:20px;height:20px;"></i></div>
+            <div>
+              <h2>Useful links</h2>
+              <p>Official pricing pages and authoritative reports — opens in a new tab.</p>
+            </div>
+          </div>
+          <div class="co-links-grid">
+            <a href="https://aws.amazon.com/pricing/" target="_blank" rel="noopener" class="co-ext-link">
+              <div class="co-ext-link-icon"><i data-lucide="cloud" style="width:16px;height:16px;"></i></div>
+              <div class="co-ext-link-text"><strong>AWS Pricing</strong><span>aws.amazon.com</span></div>
+              <div class="co-ext-link-arrow"><i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i></div>
+            </a>
+            <a href="https://azure.microsoft.com/en-us/pricing/" target="_blank" rel="noopener" class="co-ext-link">
+              <div class="co-ext-link-icon"><i data-lucide="cloud" style="width:16px;height:16px;"></i></div>
+              <div class="co-ext-link-text"><strong>Azure Pricing</strong><span>azure.microsoft.com</span></div>
+              <div class="co-ext-link-arrow"><i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i></div>
+            </a>
+            <a href="https://cloud.google.com/pricing" target="_blank" rel="noopener" class="co-ext-link">
+              <div class="co-ext-link-icon"><i data-lucide="cloud" style="width:16px;height:16px;"></i></div>
+              <div class="co-ext-link-text"><strong>Google Cloud Pricing</strong><span>cloud.google.com</span></div>
+              <div class="co-ext-link-arrow"><i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i></div>
+            </a>
+            <a href="https://info.flexera.com/CM-RESEARCH-State-of-the-Cloud-Report" target="_blank" rel="noopener" class="co-ext-link">
+              <div class="co-ext-link-icon"><i data-lucide="file-text" style="width:16px;height:16px;"></i></div>
+              <div class="co-ext-link-text"><strong>Flexera State of the Cloud</strong><span>Annual industry report</span></div>
+              <div class="co-ext-link-arrow"><i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i></div>
+            </a>
+            <a href="https://aws.amazon.com/aws-cost-management/aws-cost-explorer/" target="_blank" rel="noopener" class="co-ext-link">
+              <div class="co-ext-link-icon"><i data-lucide="bar-chart-2" style="width:16px;height:16px;"></i></div>
+              <div class="co-ext-link-text"><strong>AWS Cost Explorer</strong><span>Free usage analysis tool</span></div>
+              <div class="co-ext-link-arrow"><i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i></div>
+            </a>
+            <a href="https://azure.microsoft.com/en-us/products/cost-management" target="_blank" rel="noopener" class="co-ext-link">
+              <div class="co-ext-link-icon"><i data-lucide="bar-chart-2" style="width:16px;height:16px;"></i></div>
+              <div class="co-ext-link-text"><strong>Azure Cost Management</strong><span>Free monitoring tool</span></div>
+              <div class="co-ext-link-arrow"><i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i></div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Research strip -->
+        <div class="co-research-strip">
+          <p><strong>Want the full academic sources?</strong> The research appendix lists the studies, surveys, and vendor documents behind every figure on this site.</p>
+          <a href="research.html">View research appendix →</a>
+        </div>
+
       </div>
-
-
     </main>
 
-    <div class="co-modal-backdrop" id="checklist-modal" role="dialog" aria-modal="true" aria-labelledby="cl-title">
-      <div class="co-modal">
-        <h2 id="cl-title">5-minute cloud audit</h2>
-        <ol class="co-checklist">
-          <li><strong>Set budget alerts</strong> — get an email before the bill surprises you.</li>
-          <li><strong>Delete unused backups</strong> (old snapshots) that you no longer need.</li>
-          <li><strong>Find idle systems</strong> running 24/7 with almost no use.</li>
-          <li><strong>Check "orphan" storage</strong> — disks not attached to any active computer.</li>
-          <li><strong>Schedule off-hour shutdowns</strong> for test/training environments.</li>
-        </ol>
-        <div class="co-modal-actions">
-          <button type="button" class="co-btn-outline" id="btn-close-modal">Close</button>
-          <button type="button" class="co-btn-primary" id="btn-print-from-modal">
-            <i data-lucide="printer"></i> Print / save PDF
-          </button>
-        </div>
-      </div>
-    </div>
-
+    <!-- Print area -->
     <div id="co-print-area" style="display:none" aria-hidden="true">
       <h1 style="font-size:1.5rem">Cloud Optimizer — 5-minute cloud audit</h1>
       <p>Tick items as you go. Use your cloud provider's cost or billing page for details.</p>
-      <ol style="line-height:1.8">
+      <ol style="line-height:2">
         <li>Set budget alerts.</li>
         <li>Delete unused snapshots / old backups.</li>
         <li>Identify idle instances (very low use but still running).</li>
@@ -136,6 +511,7 @@
 
     <footer class="co-footer">
       <a href="index.html">Home</a> ·
+      <a href="strategies.html">Optimization strategies</a> ·
       <a href="research.html">Research appendix</a>
     </footer>
 
@@ -149,17 +525,22 @@
           window.location.href = "login.html";
         });
 
-        var modal = document.getElementById("checklist-modal");
         var printArea = document.getElementById("co-print-area");
+        var checklistInline = document.getElementById("checklist-inline");
+        var toggleBtn = document.getElementById("btn-toggle-checklist");
+        var toggleIcon = document.getElementById("toggle-icon");
+        var isOpen = false;
 
-        function openM() { modal.classList.add("open"); if (window.lucide) lucide.createIcons(); }
-        function closeM() { modal.classList.remove("open"); }
+        toggleBtn.addEventListener("click", function () {
+          isOpen = !isOpen;
+          checklistInline.classList.toggle("open", isOpen);
+          toggleBtn.innerHTML = isOpen
+            ? '<i data-lucide="chevron-up" style="width:15px;height:15px;"></i> Hide checklist'
+            : '<i data-lucide="chevron-down" style="width:15px;height:15px;"></i> Show checklist';
+          if (window.lucide) lucide.createIcons();
+        });
 
-        document.getElementById("btn-open-checklist").addEventListener("click", openM);
-        document.getElementById("btn-close-modal").addEventListener("click", closeM);
-        modal.addEventListener("click", function (e) { if (e.target === modal) closeM(); });
-
-        function doPrint() {
+        document.getElementById("btn-print-checklist").addEventListener("click", function () {
           printArea.style.display = "block";
           printArea.setAttribute("aria-hidden", "false");
           window.print();
@@ -167,11 +548,6 @@
             printArea.style.display = "none";
             printArea.setAttribute("aria-hidden", "true");
           }, 500);
-        }
-
-        document.getElementById("btn-print-checklist").addEventListener("click", doPrint);
-        document.getElementById("btn-print-from-modal").addEventListener("click", function () {
-          closeM(); setTimeout(doPrint, 200);
         });
       })();
     </script>

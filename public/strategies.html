@@ -13,6 +13,317 @@
     </script>
     <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
     <script src="js/lucide-init.js" defer></script>
+    <style>
+      .co-strat-hero {
+        text-align: center;
+        padding: 3rem 1rem 0;
+        max-width: 640px;
+        margin: 0 auto;
+      }
+      .co-section-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #4fa8f7;
+        display: block;
+        margin-bottom: 0.6rem;
+      }
+      .co-strat-hero h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 0 0.75rem;
+        line-height: 1.2;
+      }
+      .co-strat-hero p {
+        font-size: 0.95rem;
+        color: rgba(255,255,255,0.5);
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      .co-strat-body {
+        max-width: 860px;
+        margin: 2.5rem auto 0;
+        padding: 0 1rem 4rem;
+      }
+
+      /* Filter pills */
+      .co-filter-row {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+      }
+      .co-filter-pill {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.35rem 0.9rem;
+        border-radius: 99px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: transparent;
+        color: rgba(255,255,255,0.45);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .co-filter-pill:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); }
+      .co-filter-pill.active {
+        background: rgba(79,168,247,0.15);
+        border-color: rgba(79,168,247,0.4);
+        color: #4fa8f7;
+      }
+
+      /* Strategy cards */
+      .co-strat-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+      }
+      .co-strat-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px;
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 1.25rem;
+        align-items: start;
+        transition: border-color 0.15s;
+      }
+      .co-strat-card:hover { border-color: rgba(255,255,255,0.15); }
+      .co-strat-card[data-hidden="true"] { display: none; }
+
+      .co-strat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .co-strat-icon.blue { background: rgba(79,168,247,0.15); color: #4fa8f7; }
+      .co-strat-icon.green { background: rgba(29,158,117,0.15); color: #1d9e75; }
+      .co-strat-icon.amber { background: rgba(186,117,23,0.15); color: #ef9f27; }
+      .co-strat-icon.purple { background: rgba(127,119,221,0.15); color: #7f77dd; }
+
+      .co-strat-content h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 0.35rem;
+      }
+      .co-strat-content p {
+        font-size: 0.875rem;
+        color: rgba(255,255,255,0.5);
+        line-height: 1.6;
+        margin: 0 0 0.6rem;
+      }
+      .co-strat-tags {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+      }
+      .co-tag {
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 99px;
+        background: rgba(255,255,255,0.06);
+        color: rgba(255,255,255,0.4);
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+      .co-tag.savings { background: rgba(29,158,117,0.12); color: #1d9e75; border-color: rgba(29,158,117,0.2); }
+      .co-tag.effort-low { background: rgba(79,168,247,0.1); color: #4fa8f7; border-color: rgba(79,168,247,0.2); }
+      .co-tag.effort-med { background: rgba(186,117,23,0.1); color: #ef9f27; border-color: rgba(186,117,23,0.2); }
+
+      .co-strat-impact {
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .co-strat-impact .impact-num {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1d9e75;
+        line-height: 1;
+      }
+      .co-strat-impact .impact-label {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.3);
+        margin-top: 2px;
+        white-space: nowrap;
+      }
+
+      /* Interactive demo */
+      .co-demo-heading {
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.25);
+        margin: 0 0 0.75rem;
+      }
+      .co-demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1rem;
+      }
+      .co-demo-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 14px;
+        padding: 1.25rem;
+      }
+      .co-demo-card h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .co-demo-card p {
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.4);
+        margin: 0 0 1rem;
+        line-height: 1.5;
+      }
+
+      /* Right-sizing bar */
+      .co-bar-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 0.75rem;
+      }
+      .co-bar-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.35);
+      }
+      .co-bar-track {
+        height: 8px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 99px;
+        overflow: hidden;
+      }
+      .co-bar-fill {
+        height: 100%;
+        border-radius: 99px;
+        transition: width 0.4s ease;
+      }
+      .co-bar-fill.red { background: #e24b4a; }
+      .co-bar-fill.green { background: #1d9e75; }
+      .co-bar-note {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.3);
+        margin-top: 0.35rem;
+      }
+      .co-bar-note strong { color: #1d9e75; }
+
+      /* Schedule toggle */
+      .co-toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+      }
+      .co-toggle-label {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.6);
+      }
+      .co-switch {
+        width: 44px;
+        height: 24px;
+        border-radius: 99px;
+        background: rgba(255,255,255,0.1);
+        border: none;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.2s;
+        flex-shrink: 0;
+      }
+      .co-switch::after {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.5);
+        top: 3px;
+        left: 3px;
+        transition: left 0.2s, background 0.2s;
+      }
+      .co-switch.on { background: #1d9e75; }
+      .co-switch.on::after { left: 23px; background: #fff; }
+
+      .co-schedule-result {
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.4);
+        line-height: 1.5;
+      }
+      .co-schedule-result .highlight { color: #1d9e75; font-weight: 600; }
+
+      /* Alert mock */
+      .co-alert-mock {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        overflow: hidden;
+        font-size: 0.8rem;
+      }
+      .co-alert-mock .alert-head {
+        background: rgba(255,255,255,0.05);
+        padding: 0.5rem 0.75rem;
+        color: rgba(255,255,255,0.4);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        font-size: 0.75rem;
+      }
+      .co-alert-mock .alert-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #e24b4a;
+        flex-shrink: 0;
+      }
+      .co-alert-mock .alert-body {
+        padding: 0.75rem;
+        color: rgba(255,255,255,0.55);
+        line-height: 1.6;
+      }
+      .co-alert-mock .alert-body strong { color: #fff; }
+
+      /* CTA strip */
+      .co-cta-strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        background: rgba(79,168,247,0.06);
+        border: 1px solid rgba(79,168,247,0.18);
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        margin-top: 1.5rem;
+      }
+      .co-cta-strip p { font-size: 0.9rem; color: rgba(255,255,255,0.55); margin: 0; }
+      .co-cta-strip p strong { color: #fff; }
+      .co-cta-strip a {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #4fa8f7;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .co-cta-strip a:hover { text-decoration: underline; }
+    </style>
   </head>
   <body class="co-theme">
     <header class="co-nav">
@@ -33,94 +344,192 @@
     </header>
 
     <main class="co-main">
-      <h1 class="co-page-title">Optimization strategies</h1>
-      <p class="co-lead">
-        Two big ideas from cloud cost research — explained without jargon. Below them, you'll see a
-        <strong>sample dashboard</strong> (not connected to your real accounts) so you can picture
-        how these ideas look in practice.
-      </p>
-
-      <div class="co-strategy-grid">
-        <article class="co-card">
-          <h2><i data-lucide="percent"></i> Longer commitments = deeper discounts</h2>
-          <p>
-            If part of your usage stays <strong>steady month after month</strong>, major providers
-            let you "pre-buy" capacity for 1–3 years. Microsoft's public materials discuss
-            <strong>up to about 72% lower cost</strong> compared with paying by the hour for some
-            committed options — but only for the right workloads and terms.
-          </p>
-          <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted)">
-            Best for: stable websites, databases, or background jobs — <strong>not</strong> for
-            experiments that might be deleted next week.
-          </p>
-        </article>
-        <article class="co-card">
-          <h2><i data-lucide="moon"></i> Turn off what you don't need overnight</h2>
-          <p>
-            Test and training systems often run <strong>24 hours a day</strong> even when nobody is
-            working. Research summaries point to <strong>large savings in non-production</strong>
-            environments when automatic schedules switch servers off — figures around
-            <strong>up to 65%</strong> appear in academic/industry discussions for those scenarios.
-          </p>
-          <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted)">
-            Best for: development, demos, and sandboxes — usually <strong>not</strong> for your live
-            customer-facing site unless you truly have quiet hours.
-          </p>
-        </article>
+      <div class="co-strat-hero">
+        <span class="co-section-label">Proven playbooks</span>
+        <h1>Cut cloud costs without cutting corners</h1>
+        <p>Six practical strategies drawn from cloud cost research — explained without jargon, ranked by potential savings impact.</p>
       </div>
 
-      <h2 class="co-page-title" style="margin-top:2.5rem;font-size:1.35rem">
-        Sample optimization dashboard
-      </h2>
-      <p class="co-lead">Illustration only — toggles and bars are for learning, not live data.</p>
+      <div class="co-strat-body">
 
-      <div class="co-mock-grid">
-        <article class="co-card">
-          <h3><i data-lucide="gauge"></i> Right-sizing power</h3>
-          <p>
-            Imagine you rented a <strong>very large</strong> server "just in case," but daily use only
-            needs a <strong>smaller</strong> one. The bar shows full power vs a tighter fit.
-          </p>
-          <div class="co-capacity-visual">
-            <div class="co-capacity-bar" aria-hidden="true"></div>
-            <div class="co-capacity-legend">
-              <span>Before: paying for 100% capacity</span>
-              <span>After example: ~40% still busy</span>
+        <!-- Filter pills -->
+        <div class="co-filter-row" id="filter-row">
+          <button class="co-filter-pill active" data-filter="all">All strategies</button>
+          <button class="co-filter-pill" data-filter="quick-win">Quick wins</button>
+          <button class="co-filter-pill" data-filter="commitment">Commitments</button>
+          <button class="co-filter-pill" data-filter="scheduling">Scheduling</button>
+          <button class="co-filter-pill" data-filter="architecture">Architecture</button>
+        </div>
+
+        <!-- Strategy cards -->
+        <div class="co-strat-list" id="strat-list">
+
+          <article class="co-strat-card" data-tags="commitment">
+            <div class="co-strat-icon blue"><i data-lucide="calendar-check" style="width:20px;height:20px;"></i></div>
+            <div class="co-strat-content">
+              <h3>Commit to reserved instances</h3>
+              <p>If part of your usage stays steady month after month, pre-buying capacity for 1–3 years unlocks major discounts. Microsoft's materials cite up to 72% off versus on-demand pricing for eligible workloads.</p>
+              <div class="co-strat-tags">
+                <span class="co-tag savings">Up to 72% off</span>
+                <span class="co-tag effort-med">Medium effort</span>
+                <span class="co-tag">commitment</span>
+              </div>
+            </div>
+            <div class="co-strat-impact">
+              <div class="impact-num">72%</div>
+              <div class="impact-label">max saving</div>
+            </div>
+          </article>
+
+          <article class="co-strat-card" data-tags="scheduling">
+            <div class="co-strat-icon green"><i data-lucide="moon" style="width:20px;height:20px;"></i></div>
+            <div class="co-strat-content">
+              <h3>Schedule overnight shutdowns</h3>
+              <p>Test and dev environments often run 24/7 even when nobody is working. Auto-stopping them outside business hours can reduce non-production costs by up to 65% according to industry research.</p>
+              <div class="co-strat-tags">
+                <span class="co-tag savings">Up to 65% off</span>
+                <span class="co-tag effort-low">Low effort</span>
+                <span class="co-tag">scheduling</span>
+              </div>
+            </div>
+            <div class="co-strat-impact">
+              <div class="impact-num">65%</div>
+              <div class="impact-label">max saving</div>
+            </div>
+          </article>
+
+          <article class="co-strat-card" data-tags="architecture quick-win">
+            <div class="co-strat-icon amber"><i data-lucide="gauge" style="width:20px;height:20px;"></i></div>
+            <div class="co-strat-content">
+              <h3>Right-size your instances</h3>
+              <p>Many businesses over-provision "just in case." If your servers run at 20–40% CPU most of the time, moving to a smaller tier can halve compute costs with zero impact on performance.</p>
+              <div class="co-strat-tags">
+                <span class="co-tag savings">Up to 50% off</span>
+                <span class="co-tag effort-low">Low effort</span>
+                <span class="co-tag">architecture</span>
+              </div>
+            </div>
+            <div class="co-strat-impact">
+              <div class="impact-num">50%</div>
+              <div class="impact-label">max saving</div>
+            </div>
+          </article>
+
+          <article class="co-strat-card" data-tags="quick-win">
+            <div class="co-strat-icon blue"><i data-lucide="trash-2" style="width:20px;height:20px;"></i></div>
+            <div class="co-strat-content">
+              <h3>Delete orphan resources</h3>
+              <p>Old snapshots, unattached storage disks, and unused IP addresses accumulate silently. A monthly audit typically finds 5–15% of the bill going to resources nobody is using anymore.</p>
+              <div class="co-strat-tags">
+                <span class="co-tag savings">5–15% off</span>
+                <span class="co-tag effort-low">Low effort</span>
+                <span class="co-tag">quick-win</span>
+              </div>
+            </div>
+            <div class="co-strat-impact">
+              <div class="impact-num">15%</div>
+              <div class="impact-label">typical saving</div>
+            </div>
+          </article>
+
+          <article class="co-strat-card" data-tags="quick-win">
+            <div class="co-strat-icon green"><i data-lucide="bell" style="width:20px;height:20px;"></i></div>
+            <div class="co-strat-content">
+              <h3>Set budget alerts</h3>
+              <p>All major providers offer free budget alerts. Setting an 80% threshold alert takes under 5 minutes and prevents surprise bills — the single fastest win available to any small business.</p>
+              <div class="co-strat-tags">
+                <span class="co-tag savings">Prevents overruns</span>
+                <span class="co-tag effort-low">Low effort</span>
+                <span class="co-tag">quick-win</span>
+              </div>
+            </div>
+            <div class="co-strat-impact">
+              <div class="impact-num">Free</div>
+              <div class="impact-label">to implement</div>
+            </div>
+          </article>
+
+          <article class="co-strat-card" data-tags="architecture commitment">
+            <div class="co-strat-icon purple"><i data-lucide="zap" style="width:20px;height:20px;"></i></div>
+            <div class="co-strat-content">
+              <h3>Use spot / preemptible instances</h3>
+              <p>Providers sell spare capacity at steep discounts (often 60–90% off on-demand). Ideal for batch jobs, rendering, or workloads that can tolerate occasional interruptions.</p>
+              <div class="co-strat-tags">
+                <span class="co-tag savings">Up to 90% off</span>
+                <span class="co-tag effort-med">Medium effort</span>
+                <span class="co-tag">architecture</span>
+              </div>
+            </div>
+            <div class="co-strat-impact">
+              <div class="impact-num">90%</div>
+              <div class="impact-label">max saving</div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Interactive demos -->
+        <p class="co-demo-heading">Interactive examples — illustration only, not live data</p>
+        <div class="co-demo-grid">
+
+          <!-- Right-sizing demo -->
+          <div class="co-demo-card">
+            <h4><i data-lucide="gauge" style="width:16px;height:16px;color:#ef9f27;"></i> Right-sizing power</h4>
+            <p>Drag to set your actual CPU usage and see the before/after.</p>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.75rem;">
+              <span style="font-size:0.75rem;color:rgba(255,255,255,0.35);white-space:nowrap;">Actual use</span>
+              <input type="range" id="cpu-slider" min="10" max="90" step="5" value="35" style="flex:1;accent-color:#ef9f27;" />
+              <span style="font-size:0.85rem;font-weight:600;color:#fff;min-width:32px;" id="cpu-out">35%</span>
+            </div>
+            <div class="co-bar-row">
+              <div class="co-bar-label"><span>Current server (100%)</span><span id="before-cost">240 units/mo</span></div>
+              <div class="co-bar-track"><div class="co-bar-fill red" style="width:100%;"></div></div>
+            </div>
+            <div class="co-bar-row">
+              <div class="co-bar-label"><span>Right-sized server</span><span id="after-cost" style="color:#1d9e75;">~120 units/mo</span></div>
+              <div class="co-bar-track"><div class="co-bar-fill green" id="rightsized-bar" style="width:50%;"></div></div>
+            </div>
+            <p class="co-bar-note" id="rightsizing-note">At 35% utilisation — you're paying for <strong>~65% unused capacity</strong>.</p>
+          </div>
+
+          <!-- Schedule demo -->
+          <div class="co-demo-card">
+            <h4><i data-lucide="moon" style="width:16px;height:16px;color:#1d9e75;"></i> Night-time shutdown</h4>
+            <p>Toggle to see how switching off dev servers overnight affects monthly hours billed.</p>
+            <div class="co-toggle-row">
+              <span class="co-toggle-label">Auto-shutdown enabled</span>
+              <button type="button" class="co-switch on" id="sched-toggle" aria-pressed="true"></button>
+            </div>
+            <div class="co-schedule-result" id="sched-result">
+              <div style="margin-bottom:4px;">Hours billed / month: <span class="highlight" id="sched-hours">176</span> <span style="color:rgba(255,255,255,0.25);text-decoration:line-through;margin-left:4px;">744</span></div>
+              <div>Estimated saving: <span class="highlight" id="sched-saving">~76%</span> on dev servers</div>
+              <div style="margin-top:6px;font-size:0.75rem;color:rgba(255,255,255,0.25);">Weekdays 8 AM–6 PM only (10 hrs × 22 days)</div>
             </div>
           </div>
-        </article>
 
-        <article class="co-card">
-          <h3><i data-lucide="clock"></i> Night-time shutdown</h3>
-          <p>
-            Flip the switch to see how you might <strong>pause non-urgent systems</strong> between
-            <strong>6:00 PM and 8:00 AM</strong> on weekdays.
-          </p>
-          <div class="co-toggle-row">
-            <span id="sched-label">Servers for testing: <strong id="sched-state">OFF overnight</strong></span>
-            <button type="button" class="co-switch on" id="sched-toggle" aria-pressed="true" aria-labelledby="sched-label"></button>
-          </div>
-          <p class="co-schedule-note">
-            When <strong>off</strong>, we pretend those hours are not billed. Real providers bill
-            differently — this is a teaching picture only.
-          </p>
-        </article>
-
-        <article class="co-card">
-          <h3><i data-lucide="bell"></i> Spending alert (preview)</h3>
-          <p>
-            A simple email-style preview: warn the owner when monthly spend crosses
-            <strong>80% of the budget</strong> you set in your cloud console.
-          </p>
-          <div class="co-email-mock">
-            <div class="head"><i data-lucide="mail" style="width:1rem;height:1rem;vertical-align:middle"></i> Budget alert</div>
-            <div class="body">
-              <strong>Subject:</strong> You've used 80% of your April cloud budget<br /><br />
-              Hi — your dashboard shows <strong>80%</strong> of this month's limit is used. Review
-              recent charges or raise the budget if this was planned.
+          <!-- Alert preview -->
+          <div class="co-demo-card">
+            <h4><i data-lucide="bell" style="width:16px;height:16px;color:#4fa8f7;"></i> Spending alert preview</h4>
+            <p>What an 80% budget alert email looks like from your cloud provider.</p>
+            <div class="co-alert-mock">
+              <div class="alert-head">
+                <div class="alert-dot"></div>
+                Budget alert · cloud-billing@provider.com
+              </div>
+              <div class="alert-body">
+                <strong>You've used 80% of your April budget</strong><br /><br />
+                Your account has reached <strong>80%</strong> of this month's spending limit. Review recent charges in your billing dashboard or raise the limit if this was planned.
+              </div>
             </div>
           </div>
-        </article>
+
+        </div>
+
+        <div class="co-cta-strip">
+          <p><strong>Want to estimate your savings?</strong> Use the cost calculator to model the impact of these strategies on your monthly bill.</p>
+          <a href="calculator.html">Open cost calculator →</a>
+        </div>
+
       </div>
     </main>
 
@@ -139,12 +548,58 @@
           window.location.href = "login.html";
         });
 
-        var btn = document.getElementById("sched-toggle");
-        var state = document.getElementById("sched-state");
-        btn.addEventListener("click", function () {
-          var on = btn.classList.toggle("on");
-          btn.setAttribute("aria-pressed", on ? "true" : "false");
-          state.textContent = on ? "OFF overnight" : "ON 24 hours (costs more)";
+        /* Filter pills */
+        var pills = document.querySelectorAll(".co-filter-pill");
+        var cards = document.querySelectorAll(".co-strat-card");
+        pills.forEach(function (pill) {
+          pill.addEventListener("click", function () {
+            pills.forEach(function (p) { p.classList.remove("active"); });
+            pill.classList.add("active");
+            var filter = pill.dataset.filter;
+            cards.forEach(function (card) {
+              var tags = card.dataset.tags || "";
+              var show = filter === "all" || tags.indexOf(filter) !== -1;
+              card.setAttribute("data-hidden", show ? "false" : "true");
+            });
+          });
+        });
+
+        /* Right-sizing slider */
+        var cpuSlider = document.getElementById("cpu-slider");
+        var cpuOut = document.getElementById("cpu-out");
+        var rightsizedBar = document.getElementById("rightsized-bar");
+        var afterCost = document.getElementById("after-cost");
+        var note = document.getElementById("rightsizing-note");
+
+        cpuSlider.addEventListener("input", function () {
+          var cpu = Number(cpuSlider.value);
+          cpuOut.textContent = cpu + "%";
+          var barWidth = Math.max(20, Math.round(cpu * 0.6 + 10));
+          rightsizedBar.style.width = barWidth + "%";
+          var saving = Math.round((1 - barWidth / 100) * 240);
+          afterCost.textContent = "~" + (240 - saving) + " units/mo";
+          var unused = 100 - cpu;
+          note.innerHTML = "At " + cpu + "% utilisation — you're paying for <strong>~" + unused + "% unused capacity</strong>.";
+        });
+
+        /* Schedule toggle */
+        var schedBtn = document.getElementById("sched-toggle");
+        var schedHours = document.getElementById("sched-hours");
+        var schedSaving = document.getElementById("sched-saving");
+        var schedResult = document.getElementById("sched-result");
+
+        schedBtn.addEventListener("click", function () {
+          var on = schedBtn.classList.toggle("on");
+          schedBtn.setAttribute("aria-pressed", on ? "true" : "false");
+          if (on) {
+            schedHours.textContent = "176";
+            schedSaving.textContent = "~76%";
+            schedResult.querySelector("span[style*='line-through']").style.display = "inline";
+          } else {
+            schedHours.textContent = "744";
+            schedSaving.textContent = "0%";
+            schedResult.querySelector("span[style*='line-through']").style.display = "none";
+          }
         });
       })();
     </script>

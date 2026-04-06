@@ -10,6 +10,169 @@
     <script src="js/auth.js"></script>
     <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
     <script src="js/lucide-init.js" defer></script>
+    <style>
+      .co-stats-bar {
+        display: flex;
+        justify-content: center;
+        gap: 2.5rem;
+        flex-wrap: wrap;
+        padding: 2.5rem 1rem;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        margin: 2.5rem 0 0;
+      }
+      .co-stat {
+        text-align: center;
+      }
+      .co-stat-number {
+        display: block;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #4fa8f7;
+        line-height: 1.1;
+      }
+      .co-stat-label {
+        display: block;
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.5);
+        margin-top: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .co-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.25rem;
+        max-width: 900px;
+        margin: 3.5rem auto 0;
+        padding: 0 1rem;
+      }
+      .co-feature-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: left;
+      }
+      .co-feature-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(79,168,247,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        color: #4fa8f7;
+      }
+      .co-feature-card h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 0.4rem;
+        color: #fff;
+      }
+      .co-feature-card p {
+        font-size: 0.875rem;
+        color: rgba(255,255,255,0.5);
+        margin: 0;
+        line-height: 1.6;
+      }
+      .co-how-it-works {
+        max-width: 700px;
+        margin: 4rem auto 0;
+        padding: 0 1rem;
+        text-align: center;
+      }
+      .co-how-it-works h2 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 2rem;
+      }
+      .co-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        text-align: left;
+      }
+      .co-step {
+        display: flex;
+        gap: 1.25rem;
+        align-items: flex-start;
+        position: relative;
+        padding-bottom: 1.75rem;
+      }
+      .co-step:last-child {
+        padding-bottom: 0;
+      }
+      .co-step-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .co-step-num {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #4fa8f7;
+        color: #0a0f1e;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .co-step-line {
+        width: 1px;
+        flex: 1;
+        background: rgba(255,255,255,0.1);
+        margin-top: 6px;
+        min-height: 32px;
+      }
+      .co-step:last-child .co-step-line {
+        display: none;
+      }
+      .co-step-body {
+        padding-top: 4px;
+      }
+      .co-step-body h4 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 0.2rem;
+      }
+      .co-step-body p {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.5);
+        margin: 0;
+        line-height: 1.6;
+      }
+      .co-section-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #4fa8f7;
+        margin-bottom: 0.6rem;
+        display: block;
+      }
+      .co-features-section {
+        text-align: center;
+      }
+      .co-features-heading {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 0.4rem;
+      }
+      .co-features-sub {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.45);
+        margin: 0 0 2rem;
+      }
+    </style>
   </head>
   <body class="co-theme">
     <header class="co-nav">
@@ -41,24 +204,128 @@
       </div>
     </header>
 
-<main>
+    <main>
+      <!-- Hero -->
       <section class="co-hero">
-        <h1>Cloud cost clarity for small businesses</h1>
+        <span class="co-section-label">Free for small businesses</span>
+        <h1>Stop overpaying for cloud.<br>Start optimizing today.</h1>
         <p>
-          Explore calculators and strategies, then sign in to save business profiles and run the cloud
-          advisor. Everything runs on your machine when you use
-          <strong>npm start</strong> — accounts live in the local SQLite database.
+          Cloud Optimizer gives small businesses the tools to understand, compare, and cut cloud costs — without needing a DevOps team. Run the advisor, save business profiles, and get actionable strategies in minutes.
         </p>
 
         <div class="co-main-cta">
-          <a href="login.html" class="co-btn-primary" id="cta-primary">Sign in</a>
+          <a href="login.html" class="co-btn-primary" id="cta-primary">Get started free</a>
         </div>
 
         <div class="co-secondary-cta">
-          <a href="calculator.html" class="co-btn-outline">Cost calculator</a>
-          <a href="strategies.html" class="co-btn-outline">Optimization strategies</a>
-          <a href="resources.html" class="co-btn-outline">Resources</a>
+          <a href="calculator.html" class="co-btn-outline">
+            <i data-lucide="calculator" style="width:15px;height:15px;vertical-align:middle;margin-right:5px;"></i>Cost calculator
+          </a>
+          <a href="strategies.html" class="co-btn-outline">
+            <i data-lucide="zap" style="width:15px;height:15px;vertical-align:middle;margin-right:5px;"></i>Optimization strategies
+          </a>
+          <a href="resources.html" class="co-btn-outline">
+            <i data-lucide="book-open" style="width:15px;height:15px;vertical-align:middle;margin-right:5px;"></i>Resources
+          </a>
         </div>
+
+        <!-- Stats -->
+        <div class="co-stats-bar">
+          <div class="co-stat">
+            <span class="co-stat-number">3+</span>
+            <span class="co-stat-label">Cloud providers compared</span>
+          </div>
+          <div class="co-stat">
+            <span class="co-stat-number">30%</span>
+            <span class="co-stat-label">Avg. cost savings found</span>
+          </div>
+          <div class="co-stat">
+            <span class="co-stat-number">100%</span>
+            <span class="co-stat-label">Runs locally, stays private</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section class="co-features-section" style="padding: 0 1rem;">
+        <span class="co-section-label">What you get</span>
+        <h2 class="co-features-heading">Everything you need to tame cloud costs</h2>
+        <p class="co-features-sub">No vendor lock-in. No consultants. Just clarity.</p>
+        <div class="co-features">
+          <div class="co-feature-card">
+            <div class="co-feature-icon">
+              <i data-lucide="calculator" style="width:20px;height:20px;"></i>
+            </div>
+            <h3>Cost calculator</h3>
+            <p>Estimate and compare cloud spend across AWS, Azure, and GCP for your exact workload.</p>
+          </div>
+          <div class="co-feature-card">
+            <div class="co-feature-icon">
+              <i data-lucide="zap" style="width:20px;height:20px;"></i>
+            </div>
+            <h3>Optimization strategies</h3>
+            <p>Proven playbooks to right-size instances, eliminate waste, and negotiate better pricing.</p>
+          </div>
+          <div class="co-feature-card">
+            <div class="co-feature-icon">
+              <i data-lucide="bar-chart-2" style="width:20px;height:20px;"></i>
+            </div>
+            <h3>Cloud advisor</h3>
+            <p>Sign in to save business profiles and run a personalized advisor report for each one.</p>
+          </div>
+          <div class="co-feature-card">
+            <div class="co-feature-icon">
+              <i data-lucide="lock" style="width:20px;height:20px;"></i>
+            </div>
+            <h3>Fully private</h3>
+            <p>Everything runs locally via <code style="font-size:0.8rem;opacity:0.7;">npm start</code>. Your data stays in a local SQLite database — never uploaded.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section class="co-how-it-works">
+        <span class="co-section-label">How it works</span>
+        <h2>From sign-up to savings in 3 steps</h2>
+        <div class="co-steps">
+          <div class="co-step">
+            <div class="co-step-left">
+              <div class="co-step-num">1</div>
+              <div class="co-step-line"></div>
+            </div>
+            <div class="co-step-body">
+              <h4>Create a business profile</h4>
+              <p>Sign in and add your business. Describe your cloud setup — provider, services, and rough usage.</p>
+            </div>
+          </div>
+          <div class="co-step">
+            <div class="co-step-left">
+              <div class="co-step-num">2</div>
+              <div class="co-step-line"></div>
+            </div>
+            <div class="co-step-body">
+              <h4>Run the cloud advisor</h4>
+              <p>The advisor analyzes your profile and surfaces specific cost-saving opportunities ranked by impact.</p>
+            </div>
+          </div>
+          <div class="co-step">
+            <div class="co-step-left">
+              <div class="co-step-num">3</div>
+              <div class="co-step-line"></div>
+            </div>
+            <div class="co-step-body">
+              <h4>Apply the strategies</h4>
+              <p>Browse tailored optimization strategies and use the calculator to model savings before you commit.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom CTA -->
+      <section style="text-align:center; padding: 4rem 1rem 3rem;">
+        <h2 style="color:#fff; font-size:1.5rem; font-weight:700; margin-bottom:0.75rem;">Ready to cut your cloud bill?</h2>
+        <p style="color:rgba(255,255,255,0.45); font-size:0.9rem; margin-bottom:1.5rem;">Free to use. Takes 2 minutes to set up.</p>
+        <a href="login.html" class="co-btn-primary" id="cta-bottom">Get started free</a>
       </section>
     </main>
 
@@ -71,6 +338,7 @@
       (function () {
         var loggedIn = CloudResearchAuth.isLoggedIn();
         var cta = document.getElementById("cta-primary");
+        var ctaBottom = document.getElementById("cta-bottom");
         if (loggedIn) {
           document.getElementById("nav-signin").style.display = "none";
           var bar = document.getElementById("nav-user-bar");
@@ -82,9 +350,13 @@
           });
           cta.href = "dashboard.html";
           cta.textContent = "Open my businesses";
+          ctaBottom.href = "dashboard.html";
+          ctaBottom.textContent = "Open my businesses";
         } else {
           cta.href = "login.html";
-          cta.textContent = "Sign in";
+          cta.textContent = "Get started free";
+          ctaBottom.href = "login.html";
+          ctaBottom.textContent = "Get started free";
         }
       })();
     </script>
